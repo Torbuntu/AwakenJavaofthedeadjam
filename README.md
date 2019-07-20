@@ -1,1 +1,32 @@
 # Awaken (Working title) a Java game for the Java of the dead POkitto game jam
+
+## Day 1
+| Showcase |
+|----|
+| ![](Showcase/day1.gif?raw=true) |
+
+Created a Hero character and got him working inside the Java code in FemtoIDE. Initial game design plans have been drawn up as follows (pretty rough sketch):
+```
+[[ Awaken ]] <- working title
+
+5 stages. 
+Each stage in a different location with unique undead foes and a mega boss.
+
+Player travels to one of the areas to research the culture and awakens the
+undead inadvertantly. The character must then defeat all the undead and also
+the megaboss to discover the treasures of the region.
+
+Weapons: Yo-yo, Shovel 
+
+
+1. North America : Skeletons and the Skinwalker 
+
+2. China : Terracotta Army and Qin Shi Huang :
+
+3. Romania : Vampyres and Dracula :
+
+4. Scandinavia : Draugr and Ivar the Boneless :
+
+5. Egypt : Mummies and Anubis : 
+```
+This is obviously just an initial run at setting up the game and planning a rough "sketch" of what it can be. The idea is that it is a treasure hunting game gone wrong. Your hero travels to a distant location to hunt for mystical coffee beans, but instead ends up waking the dead! Fighting off hordes of undead monsters until a megaboss arrives. When the megaboss is destroyed the Hero then collects the mystical coffee beans and enjoys the joe of the land. (WIP)
