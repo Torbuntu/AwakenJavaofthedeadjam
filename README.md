@@ -5,6 +5,7 @@
 |----|
 | ![](Showcase/day1.gif?raw=true) |
 
+Day one was just figuring out what to make and playing around with Aseprite to see what I could do quickly.
 Created a Hero character and got him working inside the Java code in FemtoIDE. Initial game design plans have been drawn up as follows (pretty rough sketch):
 ```
 [[ Awaken ]] <- working title
@@ -30,3 +31,8 @@ Weapons: Yo-yo, Shovel
 5. Egypt : Mummies and Anubis : 
 ```
 This is obviously just an initial run at setting up the game and planning a rough "sketch" of what it can be. The idea is that it is a treasure hunting game gone wrong. Your hero travels to a distant location to hunt for mystical coffee beans, but instead ends up waking the dead! Fighting off hordes of undead monsters until a megaboss arrives. When the megaboss is destroyed the Hero then collects the mystical coffee beans and enjoys the joe of the land. (WIP)
+
+## Day 2
+
+Created a Git repo with the WIP title Awaken. Pushed the project sources to it so I can now work from any computer.
+Downloaded and set up the [FemtoIDE Game Jam Edition](https://github.com/felipemanga/FemtoIDE/releases/tag/v0.0.15b)
