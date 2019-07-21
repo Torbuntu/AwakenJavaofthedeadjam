@@ -192,6 +192,26 @@
 		"/BG_TEST.png": {
 			"sdcard": false,
 			"implements": ""
+		},
+		"/README.md": {
+			"sdcard": false
+		},
+		"/Showcase": {},
+		"/Showcase/day1.gif": {
+			"sdcard": false
+		},
+		"/awaken-javaofthedeadjam.elf": {
+			"sdcard": false
+		},
+		"/awaken-javaofthedeadjam.bin": {
+			"sdcard": false
+		},
+		"/awaken-javaofthedeadjam.bin.1.png": {
+			"sdcard": false,
+			"implements": ""
+		},
+		"/Showcase/day2.gif": {
+			"sdcard": false
 		}
 	}
 }
