@@ -34,5 +34,19 @@ This is obviously just an initial run at setting up the game and planning a roug
 
 ## Day 2
 
+| Showcase |
+|----|
+| ![](Showcase/day2.gif?raw=true) |
+
 Created a Git repo with the WIP title Awaken. Pushed the project sources to it so I can now work from any computer.
 Downloaded and set up the [FemtoIDE Game Jam Edition](https://github.com/felipemanga/FemtoIDE/releases/tag/v0.0.15b)
+
+Playing with a state machine using a switch case and int variiable.
+
+Started using `CGArne` as the default color palette. Might change in the future. Set the assets to indexed mode in Aseprite so switching palette might be easier.
+
+List of palettes from [here (16 color)](https://lospec.com/palette-list)
+
+Finished the shovel attack animation.
+
+Tried to fix the walking animation.
