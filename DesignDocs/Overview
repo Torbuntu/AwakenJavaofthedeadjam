@@ -1,0 +1,24 @@
+Story: Coffee has grown into the world's most precious material. After a spike in the evolution of the caffeine within coffee, the drug is suddenly highly addictive. Without access to the drink many have perished due to withdrawel. But due to the nature of this new drug, the corpses are reanimated in a disturbing state, roaming the earth in search of the plants which created them.
+
+
+Primary Mechanic:
+- Day based wave system. Each day is a new wave of enemies. Increasing in quantity as well as tiers. 
+- Goal: The goal is for the player to plant coffea crops to gain seeds/fruits/flowers. If the player loses all of these by the end of a day (zombie eats them all) then the player loses by becoming an undead. So the player must focus both on planting the crops and then protecting them. 
+
+Inventory: 
+- Coffea seeds (dropped from full grown Coffea Plants). 
+- Coffea Fruits (health++). 
+- Coffea Flowers.
+
+Movement: 
+- Player moves in a grid based on the play field.
+- Enemies move in row lanes, but not restricted to the grid.
+
+Moves:
+- Player must defend the crops by means of weapons to attack the undead assailants. Shovel and Yoyo are the main weapons. Maybe super moves?
+- Shovel: Pushes enemies back, normal damage.
+- Yoyo: freezes enemies but does damage while they are touching it.
+- Player must plant more coffea plants to gain more coffee. If the player runs out of coffea by the end of any day (day based game play) then the player becomes undead.
+
+- Enemies each have a generic "attack()" method. Maybe add tiers of enemies, each tier with more damage and more health. Speed too?
+
