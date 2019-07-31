@@ -50,3 +50,18 @@ List of palettes from [here (16 color)](https://lospec.com/palette-list)
 Finished the shovel attack animation.
 
 Tried to fix the walking animation.
+
+## Day 3
+
+| Showcase |
+|----|
+| ![](Showcase/day3.gif?raw=true) |
+
+Decided I did not want to continue down the path of making a platformer, as that seems to always be my "safe zone" and the type of project I always default to.
+
+I restarted making a new type of game that is a sort of cross between Megaman Battle Network games and Plants Vs. Zombies.
+
+I liked the Shovel and the Yoyo too much to abandoned those ideas.
+
+See ![Design docs](DesignDocs/Overview) for more details.
+
