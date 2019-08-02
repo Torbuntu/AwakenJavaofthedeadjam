@@ -20,6 +20,11 @@ class Main extends State {
     int state;//0 = title, 1=game, 2=pre-day, 3=pause, 4=game-over
     Zombie zombie;
     
+    Zombie[] wave;
+    int[] eCool;
+    
+    int t;
+    
     int left, right;
     // start the game using Main as the initial state
     public static void main(String[] args){
@@ -41,6 +46,20 @@ class Main extends State {
         
         left = 0;//shovel
         right = 1;//yoyo
+      
+        makeWave(2);      
+        t = 0;
+    }
+    
+    void makeWave(int amount){
+        wave = new Zombie[amount];
+        eCool = new int[amount];
+        for(int i = 0; i < amount; i++){
+            wave[i] = new Zombie();
+            wave[i].x = 220;
+            wave[i].y = 59+Math.random(0,5)*24;59+Math.random(0,5)*24;
+            eCool[i] = 0;
+        }
     }
     
     // Might help in certain situations
@@ -50,6 +69,10 @@ class Main extends State {
     
     // update is called by femto.Game every frame
     void update(){
+        t += 1;
+        if(t>300){
+            t=0;
+        }
         switch(state){
             case 0:
                 screen.clear( 0 );
@@ -59,11 +82,9 @@ class Main extends State {
                 break;
             case 1:
                 screen.clear( 0 );
-                moveHero();
+                
                 
                 playField.draw(screen, 0.0f, 0.0f);
-                
-                hero.draw(screen);
                 
                 if(zombie.x < 0) {
                     zombie.x = 220;
@@ -71,13 +92,20 @@ class Main extends State {
                 }
                 zombie.walk();
                 zombie.x -= 0.1f;
+                
+                
+                moveZombies();
+                moveHero();
+                
+                hero.draw(screen);
                 zombie.draw(screen);
+                drawZombies();
                 
                 time += 0.1f;
                 if(time >= 190) time = 32.0f;
                 screen.drawLine(32.0f,16.0f, time, 16.0f, 14, false);
                 // Update the screen with everything that was drawn
-                
+                if( Button.C.justPressed() ) //state = 3;
                 break;
             case 2:
                 
@@ -94,6 +122,23 @@ class Main extends State {
         
     }
     
+    void moveZombies(){
+        for(int i = 0; i < wave.length; i++){
+            
+            if(eCool[i] > 0) {
+                eCool[i] -= 1;
+                wave[i].hurt();
+            } else{
+                wave[i].x -= 0.1f;
+                wave[i].walk();
+            }
+        }
+    }
+    void drawZombies(){
+        for(Zombie z : wave){
+            z.draw(screen);
+        }
+    }
     
     void moveHero(){
         
@@ -120,7 +165,7 @@ class Main extends State {
             itemAction(right);
         }
         
-        
+        //Translate to grid
         hero.x = 6+hx*24;
         hero.y = 59+hy*24;
     }
@@ -129,13 +174,32 @@ class Main extends State {
         switch(hand){
             case 0:
                 hero.shovel();
-                if(zombie.x <= hero.x+18 && zombie.x >= hero.x+8 && zombie.y == hero.y) zombie.x+=6;
+                for(int i = 0; i < wave.length; i++){
+                    if (wave[i].y == hero.y ){
+                        if(hit(wave[i].x, hero.x, 18, 8)){
+                            wave[i].x += 6;
+                            eCool[i] = 50;
+                        }
+                    }
+                }
+                
                 break;
             case 1:
                 hero.yoyo();
-                if(zombie.x <= hero.x+27 && zombie.x >= hero.x+20 && zombie.y == hero.y) zombie.x+=1;
+                for(int i = 0; i < wave.length; i++){
+                    if(wave[i].y == hero.y){
+                        if(hit(wave[i].x, hero.x, 27, 12) ){
+                            wave[i].x += 1;
+                            eCool[i] = 10;
+                        }
+                    }
+                }
                 break;
         }
+    }
+    
+    boolean hit(float zx, float hx, int adist, int bdist){
+        return zx <= hx+adist && zx >= hx+bdist;
     }
     
 }

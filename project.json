@@ -247,6 +247,18 @@
 		},
 		"/.git": {
 			"sdcard": false
+		},
+		"/Showcase/day1.gif": {
+			"sdcard": false
+		},
+		"/Showcase/day2.gif": {
+			"sdcard": false
+		},
+		"/Showcase/day3.gif": {
+			"sdcard": false
+		},
+		"/Showcase/day4.gif": {
+			"sdcard": false
 		}
 	}
 }
