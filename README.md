@@ -65,3 +65,10 @@ I liked the Shovel and the Yoyo too much to abandoned those ideas.
 
 See ![Design docs](DesignDocs/Overview) for more details.
 
+## Day 4
+
+| Showcase |
+|----|
+| ![](Showcase/day4.gif?raw=true) |
+
+Adding a better background. Multiple enemies and attacks actually trigger hurting animations. 
