@@ -72,3 +72,28 @@ See ![Design docs](DesignDocs/Overview) for more details.
 | ![](Showcase/day4.gif?raw=true) |
 
 Adding a better background. Multiple enemies and attacks actually trigger hurting animations. 
+
+
+## Day 5
+
+| Showcase |
+|----|
+| ![](Showcase/day5.gif?raw=true) |
+
+Added:
+* Health and cooldown including health sprite
+* Inventory Screen
+* Inventory system with swappable items for left and right hand
+* Planter item (will eventually be limited by Seed quantity)
+* Plantable tiles and a Sprout sprite
+
+Updated:
+* The playfield background art has been updated
+* Added some animations to Hero
+
+TODO:
+* Make the plants grow per day.
+* Droppable items from plants
+* Killable zombies (and dropped items)
+* Add Seed items for planting
+* Update the art assets to be not terrible (which includes better animations). This will be after the game logic is implemented, as that is more important to finalize first.
