@@ -86,6 +86,46 @@
     "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 16 },
     "sourceSize": { "w": 64, "h": 16 },
     "duration": 100
+   },
+   "Hero 11.ase": {
+    "frame": { "x": 704, "y": 0, "w": 64, "h": 16 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 16 },
+    "sourceSize": { "w": 64, "h": 16 },
+    "duration": 100
+   },
+   "Hero 12.ase": {
+    "frame": { "x": 768, "y": 0, "w": 64, "h": 16 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 16 },
+    "sourceSize": { "w": 64, "h": 16 },
+    "duration": 100
+   },
+   "Hero 13.ase": {
+    "frame": { "x": 832, "y": 0, "w": 64, "h": 16 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 16 },
+    "sourceSize": { "w": 64, "h": 16 },
+    "duration": 100
+   },
+   "Hero 14.ase": {
+    "frame": { "x": 896, "y": 0, "w": 64, "h": 16 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 16 },
+    "sourceSize": { "w": 64, "h": 16 },
+    "duration": 50
+   },
+   "Hero 15.ase": {
+    "frame": { "x": 960, "y": 0, "w": 64, "h": 16 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 16 },
+    "sourceSize": { "w": 64, "h": 16 },
+    "duration": 50
    }
  },
  "meta": {
@@ -93,13 +133,15 @@
   "version": "1.2.13-x64",
   "image": "Hero.png",
   "format": "RGBA8888",
-  "size": { "w": 704, "h": 16 },
+  "size": { "w": 1024, "h": 16 },
   "scale": "1",
   "frameTags": [
    { "name": "idle", "from": 0, "to": 0, "direction": "forward" },
    { "name": "walk", "from": 1, "to": 3, "direction": "forward" },
    { "name": "shovel", "from": 4, "to": 6, "direction": "forward" },
-   { "name": "yoyo", "from": 7, "to": 10, "direction": "forward" }
+   { "name": "yoyo", "from": 7, "to": 10, "direction": "forward" },
+   { "name": "plant", "from": 11, "to": 13, "direction": "forward" },
+   { "name": "hurt", "from": 14, "to": 15, "direction": "forward" }
   ],
   "layers": [
    { "name": "Sprite Sheet", "opacity": 255, "blendMode": "normal" }

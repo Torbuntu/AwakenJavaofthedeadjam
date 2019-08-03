@@ -259,6 +259,78 @@
 		},
 		"/Showcase/day4.gif": {
 			"sdcard": false
+		},
+		"/backgrounds/inventory.png": {
+			"sdcard": false,
+			"implements": ""
+		},
+		"/item": {
+			"sdcard": false
+		},
+		"/backgrounds/Inventory.png": {
+			"sdcard": false,
+			"implements": ""
+		},
+		"/item/Heart.aseprite": {
+			"sdcard": false
+		},
+		"/item/Sprout.aseprite": {
+			"sdcard": false
+		},
+		"/item/heart.json": {
+			"sdcard": false,
+			"implements": ""
+		},
+		"/item/heart.png": {
+			"sdcard": false,
+			"implements": ""
+		},
+		"/item/sprout.png": {
+			"sdcard": false,
+			"implements": ""
+		},
+		"/item/sprout.json": {
+			"sdcard": false,
+			"implements": ""
+		},
+		"/item/.goutputstream-OIKB6Z": {
+			"sdcard": false
+		},
+		"/item/Heart.png": {
+			"sdcard": false,
+			"implements": ""
+		},
+		"/item/Sprout.png": {
+			"sdcard": false,
+			"implements": ""
+		},
+		"/item/.goutputstream-B0345Z": {
+			"sdcard": false
+		},
+		"/item/Sprout.json": {
+			"sdcard": false,
+			"implements": ""
+		},
+		"/item/Heart.json": {
+			"sdcard": false,
+			"implements": ""
+		},
+		"/entities/plant": {
+			"sdcard": false
+		},
+		"/entities/plant/Coffea.aseprite": {
+			"sdcard": false
+		},
+		"/entities/plant/Coffea.json": {
+			"sdcard": false,
+			"implements": ""
+		},
+		"/entities/plant/Coffea.png": {
+			"sdcard": false,
+			"implements": ""
+		},
+		"/Showcase/day5.gif": {
+			"sdcard": false
 		}
 	}
 }
