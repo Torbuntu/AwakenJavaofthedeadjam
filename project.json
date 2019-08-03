@@ -331,6 +331,20 @@
 		},
 		"/Showcase/day5.gif": {
 			"sdcard": false
+		},
+		"/item/Shovel.png": {
+			"sdcard": false,
+			"implements": ""
+		},
+		"/item/Yoyo.aseprite": {
+			"sdcard": false
+		},
+		"/item/Yoyo.png": {
+			"sdcard": false,
+			"implements": ""
+		},
+		"/Showcase/day6.gif": {
+			"sdcard": false
 		}
 	}
 }

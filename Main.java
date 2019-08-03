@@ -11,6 +11,9 @@ import entities.hero.Hero;
 import entities.enemies.zombie.Zombie;
 import entities.plant.Coffea;
 import item.Heart;
+import item.Sprout;
+import item.Shovel;
+import item.Yoyo;
 
 
 
@@ -26,6 +29,10 @@ class Main extends State {
     int lives;
     Heart heart;
     Coffea[] plants;
+    
+    Shovel shovel;
+    Sprout sprout;
+    Yoyo yoyo;
     
     int plantCount;
     
@@ -51,6 +58,11 @@ class Main extends State {
         playField = new Playfield();
         inventoryScreen = new Inventory();
         hero = new Hero();
+        
+        shovel = new Shovel();
+        sprout = new Sprout();
+        yoyo = new Yoyo();
+        
         hx = 1;
         hy = 1;
         time = 8.0f;
@@ -132,29 +144,18 @@ class Main extends State {
                 inventoryScreen.draw(screen, 0.0f, 0.0f);
                 drawLives();
                 if( Button.C.justPressed() ) state = 1;
-                if( Button.Left.justPressed() ) handSelect = 0;
-                if( Button.Right.justPressed() ) handSelect = 1;
+                if( Button.Left.justPressed() && handSelect > 0) handSelect --;
+                if( Button.Right.justPressed() && handSelect < 4) handSelect ++;
                 
-                if( Button.Up.justPressed() ){
-                    if(handSelect == 0){
-                        if( left > 0 ) left--;
-                    }else{
-                        if( right > 0 )right--;
-                    }
-                }
-                if( Button.Down.justPressed() ){
-                    if(handSelect == 0){
-                        if( left < 4 ) left++;
-                    }else{
-                        if( right < 4 )right++;
-                    }
-                }
+                if( Button.A.justPressed() && right != handSelect) left = handSelect;
+                if( Button.B.justPressed() && left != handSelect) right = handSelect;
                 
-                if(handSelect == 0){
-                    screen.drawRect(8, 51+left*24, 17, 17, 9);
-                }else{
-                    screen.drawRect(56, 51+right*24, 17, 17, 9);
-                }
+                //draw
+                drawInventory(8, left);
+                drawInventory(56, right);
+                
+                //draw handSelect
+                screen.drawRect(8+handSelect*24, 38, 17, 17, 9);
                 
                 break;
             case 4:
@@ -290,7 +291,7 @@ class Main extends State {
                 break;
             case 3:
                 for(int i = 0; i < lives; i++){
-                    heart.draw(screen, 96.0f, (float)(48+i*24));
+                    heart.draw(screen, (float)(94+i*24), 10.0f);
                 }
                 break;
         }
@@ -301,6 +302,28 @@ class Main extends State {
             if(c==null)continue;
             c.idle();
             c.draw(screen);
+        }
+    }
+    
+    void drawInventory(int handX, int item){
+        switch(item){
+            case 0:
+                shovel.draw(screen, handX, 8);
+                break;
+            case 1:
+                yoyo.draw(screen, handX, 8);
+                break;
+                
+            case 2:
+                sprout.draw(screen, handX, 8);
+                break;
+            case 3:
+                
+                break;
+                
+            case 4:
+                
+                break;
         }
     }
 
