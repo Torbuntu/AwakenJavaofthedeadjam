@@ -97,3 +97,12 @@ TODO:
 * Killable zombies (and dropped items)
 * Add Seed items for planting
 * Update the art assets to be not terrible (which includes better animations). This will be after the game logic is implemented, as that is more important to finalize first.
+
+## Day 6
+
+| Showcase |
+|----|
+| ![](Showcase/day6.gif?raw=true) |
+
+Short on time today, so quickly reworked the inventory GUI and system. Inspired by older Zelda games, makes much more sense and leaves room for other more important things on the screen.
+
