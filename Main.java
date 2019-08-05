@@ -14,7 +14,7 @@ import item.Heart;
 import item.Sprout;
 import item.Shovel;
 import item.Yoyo;
-
+import ZombieImpl;
 
 
 
@@ -25,8 +25,7 @@ class Main extends State {
     Playfield playField;
     Inventory inventoryScreen;
     Hero hero;
-    Zombie[] wave;
-    int lives;
+ 
     Heart heart;
     Coffea[] plants;
     
@@ -34,14 +33,13 @@ class Main extends State {
     Sprout sprout;
     Yoyo yoyo;
     
-    int plantCount;
-    
-    int hx, hy, left, right, t, cooldown;
-    int state;//0 = title, 1=game, 2=pre-day, 3=pause, 4=game-over
-    
-    int[] eCool;
+    ZombieImpl zombies;
     
     float time;
+    int lives, kills;
+    
+    int hx, hy, left, right, t, cooldown, plantCount, seeds, timeToPlant;
+    int state;//0 = title, 1=game, 2=pre-day, 3=pause, 4=game-over
     
     //inventory variables
     int handSelect;//0=left, 1=right
@@ -54,6 +52,7 @@ class Main extends State {
     // Avoid allocation in a State's constructor.
     // Allocate on init instead.
     void init(){
+        System.out.println("::: Start init :::");
         screen = new HiRes16Color(Castpixel16.palette(), TIC80.font());
         playField = new Playfield();
         inventoryScreen = new Inventory();
@@ -70,29 +69,23 @@ class Main extends State {
         left = 0;//shovel
         right = 1;//yoyo
       
-        makeWave(2);      
+        zombies = new ZombieImpl(2);
+      
         t = 0;
         
         lives = 5;
+        kills = 0;
         heart = new Heart();
+        seeds = 1;//Start you off with one lonely seed. Don't screw it up! :D
+        timeToPlant = 0;
         
         handSelect = 0;
         
         plants = new Coffea[45];
+        System.out.println("::: Finished init :::");
  
     }
 
-    void makeWave(int amount){
-        wave = new Zombie[amount];
-        eCool = new int[amount];
-        for(int i = 0; i < amount; i++){
-            wave[i] = new Zombie();
-            wave[i].x = 220;
-            wave[i].y = 60+Math.random(0,5)*24;60+Math.random(0,5)*24;
-            eCool[i] = 0;
-        }
-    }
-    
     // Might help in certain situations
     void shutdown(){
         screen = null;
@@ -104,12 +97,15 @@ class Main extends State {
         if(t>300) t=0;
         if(cooldown > 0) cooldown--;
         
+        screen.clear(0);
         switch(state){
             case 0:
-                screen.clear( 0 );
                 if( Button.C.justPressed() ){
                     state = 1;
                 }
+                screen.setTextColor(1);
+                screen.setTextPosition(10, 10);
+                screen.print("Press C to play");
                 break;
             case 1:
                 screen.clear( 0 );
@@ -130,17 +126,26 @@ class Main extends State {
                 drawLives();
                 
                 time += 0.05f;
-                if(time >= 190) time = 8.0f;
+                if(time >= 190){
+                    time = 8.0f;  
+                    state = 2;
+                } 
+                
+                //Day meter
                 screen.drawLine(8.0f, 32.0f, time, 32.0f, 14, false);
                 
                 if( Button.C.justPressed() ) state = 3;
                 
                 break;
             case 2:
-                
+                if ( Button.C.justPressed() ) {
+                    state = 1;
+                }
+                screen.setTextColor(1);
+                screen.setTextPosition(10, 10);
+                screen.print("Press C to start the next day");
                 break;
             case 3:
-                screen.clear(0);
                 inventoryScreen.draw(screen, 0.0f, 0.0f);
                 drawLives();
                 if( Button.C.justPressed() ) state = 1;
@@ -164,24 +169,28 @@ class Main extends State {
         }
         
         screen.flush();
-        
     }
     
     void moveZombies(){
-        for(int i = 0; i < wave.length; i++){
-            
-            if(eCool[i] > 0) {
-                eCool[i] -= 1;
-                wave[i].hurt();
-            } else{
-                wave[i].x -= 0.1f;
-                wave[i].walk();
+        for(int i = 0; i < zombies.getSize(); i++){
+            if(zombies.getHealth(i) < 0) {
+                zombies.setHealth(i, 10);
+                zombies.getZombie(i).x = 220;
+                zombies.getZombie(i).y = 60+Math.random(0,5)*24;
+                kills++;
             }
-            if(wave[i].x < 0) wave[i].x = 220;
+            if(zombies.getCooldown(i) > 0) {
+                zombies.setCooldown(i, zombies.getCooldown(i)-1);
+                zombies.getZombie(i).hurt();
+            } else{
+                zombies.getZombie(i).x -= 0.1f;
+                zombies.getZombie(i).walk();
+            }
+            if(zombies.getZombie(i).x < 0) zombies.getZombie(i).x = 220;
         }
     }
     void drawZombies(){
-        for(Zombie z : wave){
+        for(Zombie z : zombies.getAllZombies()){
             z.draw(screen);
         }
     }
@@ -190,6 +199,7 @@ class Main extends State {
         
         if (!Button.Up.isPressed() && !Button.Down.isPressed() && !Button.Right.isPressed() && !Button.Left.isPressed() && !Button.A.isPressed() && !Button.B.isPressed() && cooldown == 0) {
             hero.idle();
+            timeToPlant = 0;
         }
         if( Button.Down.justPressed() && hy < 4 ){
             hy += 1;
@@ -222,11 +232,12 @@ class Main extends State {
         switch(hand){
             case 0://shovel
                 hero.shovel();
-                for(int i = 0; i < wave.length; i++){
-                    if (wave[i].y == hero.y ){
-                        if(hit(wave[i].x, hero.x, 18, 8)){
-                            wave[i].x += 6;
-                            eCool[i] = 50;
+                for(int i = 0; i < zombies.getSize(); i++){
+                    if (zombies.getZombie(i).y == hero.y ){
+                        if(hit(zombies.getZombie(i).x, hero.x, 18, 8)){
+                            zombies.getZombie(i).x += 6;
+                            zombies.setCooldown(i, 80);
+                            zombies.setHealth(i, zombies.getHealth(i) - 4);
                         }
                     }
                 }
@@ -234,18 +245,20 @@ class Main extends State {
                 break;
             case 1://yoyo
                 hero.yoyo();
-                for(int i = 0; i < wave.length; i++){
-                    if(wave[i].y == hero.y){
-                        if(hit(wave[i].x, hero.x, 27, 12) ){
-                            wave[i].x += 1;
-                            eCool[i] = 10;
+                for(int i = 0; i < zombies.getSize(); i++){
+                    if(zombies.getZombie(i).y == hero.y){
+                        if(hit(zombies.getZombie(i).x, hero.x, 27, 12) ){
+                            zombies.getZombie(i).x += 1;
+                            zombies.setCooldown(i, 10);
+                            zombies.setHealth(i, zombies.getHealth(i) - 1);
                         }
                     }
                 }
                 break;
             case 2://plant
 
-                if( !containsPlant() ){
+                if( !containsPlant() && seeds > 0 && timeToPlant > 45){
+                    timeToPlant = 0;
                     Coffea n = new Coffea();
                     n.x = 6+hx*24;
                     n.y = 60+hy*24;
@@ -255,6 +268,9 @@ class Main extends State {
                             break;
                         }
                     }
+                }else{
+                    System.out.println(timeToPlant);
+                    timeToPlant++;
                 }
                 hero.plant();
                 
@@ -263,7 +279,7 @@ class Main extends State {
     }
     
     boolean zombieHitPlayer(){
-        for(Zombie z : wave){
+        for(Zombie z : zombies.getAllZombies()){
             if(z.y == hero.y && z.x <= hero.x+12 && z.x > hero.x+3) return true;
         }
         return false;
@@ -291,7 +307,7 @@ class Main extends State {
                 break;
             case 3:
                 for(int i = 0; i < lives; i++){
-                    heart.draw(screen, (float)(94+i*24), 10.0f);
+                    heart.draw(screen, (float)(12+i*24), 80.0f);
                 }
                 break;
         }

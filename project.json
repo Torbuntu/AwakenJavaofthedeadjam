@@ -345,6 +345,15 @@
 		},
 		"/Showcase/day6.gif": {
 			"sdcard": false
+		},
+		"/AwakenJavaofthedeadjam.elf": {
+			"sdcard": false
+		},
+		"/AwakenJavaofthedeadjam.bin": {
+			"sdcard": false
+		},
+		"/ZombieImpl.java": {
+			"sdcard": false
 		}
 	}
 }
