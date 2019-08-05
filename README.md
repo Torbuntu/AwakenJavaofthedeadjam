@@ -106,3 +106,18 @@ TODO:
 
 Short on time today, so quickly reworked the inventory GUI and system. Inspired by older Zelda games, makes much more sense and leaves room for other more important things on the screen.
 
+## Day 7
+
+| Showcase |
+|----|
+| ![](Showcase/day7.gif?raw=true) |
+
+Added:
+* Zombies now take damage and die, releasing new zombies.
+* ZombieImpl now contains all wave information for enemies.
+* Seed item added, not functional.
+* Now takes time to plant a seed.
+* Added New Day screen (nothing exciting on it yet)
+
+Updated:
+* Cleaned up some game logic in the code, was a good overhaul effort. 
