@@ -354,6 +354,29 @@
 		},
 		"/ZombieImpl.java": {
 			"sdcard": false
+		},
+		"/Showcase/day7.gif": {
+			"sdcard": false
+		},
+		"/item/notHas.png": {
+			"sdcard": false,
+			"implements": ""
+		},
+		"/item/NotHas.png": {
+			"sdcard": false,
+			"implements": ""
+		},
+		"/item/Sword.png": {
+			"sdcard": false,
+			"implements": ""
+		},
+		"/item/Gun.png": {
+			"sdcard": false,
+			"implements": ""
+		},
+		"/backgrounds/Shop.png": {
+			"sdcard": false,
+			"implements": ""
 		}
 	}
 }
