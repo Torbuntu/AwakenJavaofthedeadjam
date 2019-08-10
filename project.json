@@ -377,6 +377,16 @@
 		"/backgrounds/Shop.png": {
 			"sdcard": false,
 			"implements": ""
+		},
+		"/Showcase/day8.gif": {
+			"sdcard": false
+		},
+		"/CoffeaImpl.java": {
+			"sdcard": false
+		},
+		"/item/Coin.png": {
+			"sdcard": false,
+			"implements": ""
 		}
 	}
 }

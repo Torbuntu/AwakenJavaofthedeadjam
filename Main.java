@@ -19,6 +19,8 @@ import item.Sword;
 import item.Gun;
 import item.NotHas;
 import ZombieImpl;
+import CoffeaImpl;
+import item.Coin;
 
 
 
@@ -33,23 +35,29 @@ class Main extends State {
 
     Heart heart;
     NotHas notHas;
-    Coffea[] plants;
-
+    CoffeaImpl plants;//0 = planted, 1 = day 1, 2 = day 2, 3 = day 3, 4 = harvestable, 5 = destroyed
+    ZombieImpl zombies;
     Shovel shovel;
     Sprout sprout;
     Yoyo yoyo;
     Sword sword;
     Gun gun;
+    
+    Coin coin;
+    
+    //Item drops
+    int flower, fruit, beans; //0,1,2
 
-    ZombieImpl zombies;
+    //inventory items:
+    int coins, seeds;
 
-    float time;
-
-    int hx, hy, left, right, cooldown, plantCount, seeds, timeToPlant, coins, lives, waveNum, purchaceSelect, ammo;
+    int hx, hy, left, right, cooldown, plantCount, timeToPlant, lives, waveNum, purchaceSelect, ammo;
     int state; //0 = title, 1=game, 2=pre-day, 3=pause/inventory, 4=game-over
 
     //inventory variables
     int handSelect; //0=left, 1=right
+    
+    float time;
     
     boolean hasYoyo, hasSword, hasGun;
     
@@ -74,11 +82,15 @@ class Main extends State {
         yoyo = new Yoyo();
         sword = new Sword();
         gun = new Gun();
+        coin = new Coin();
         
         heart = new Heart();
         notHas = new NotHas();
         
         restart();
+        
+        
+        System.out.println("::: Finished init :::");
     }
     
     void restart(){
@@ -91,6 +103,7 @@ class Main extends State {
         
         waveNum = 2;
         zombies = new ZombieImpl(waveNum);
+        plants = new CoffeaImpl();
 
         lives = 5;
         coins = 0;
@@ -103,9 +116,11 @@ class Main extends State {
         hasSword = false;
         purchaceSelect = 0;
         ammo = 0;
-        plants = new Coffea[45];
+        flower = 0;
+        fruit = 0;
+        beans = 0;
+        
         message = "";
-        System.out.println("::: Finished init :::");
     }
 
     // Might help in certain situations
@@ -146,7 +161,9 @@ class Main extends State {
                 
                 if (cooldown > 0) cooldown--;
                 
-                moveZombies();
+                //move zombies and add coins for kills
+                coins = zombies.moveZombies(coins);
+                
                 if (zombieHitPlayer() && cooldown == 0) {
                     lives--;
                     if(lives == 0) {
@@ -166,6 +183,7 @@ class Main extends State {
                 if (time >= 158) {
                     time = 8.0f;
                     message = "";
+                    plants.updatePlants();
                     state = 2;
                 }
 
@@ -176,9 +194,17 @@ class Main extends State {
                 screen.setTextPosition(100, 12);
                 screen.print("Coins: " + coins);
 
-                screen.setTextColor(11);
                 screen.setTextPosition(100, 20);
                 screen.print("Seeds: " + seeds);
+                
+                screen.setTextPosition(100, 28);
+                screen.print("Flowers: " + flower);
+                
+                screen.setTextPosition(100, 36);
+                screen.print("Fruits: " + fruit);
+                
+                screen.setTextPosition(100, 44);
+                screen.print("Beans: " + beans);
                 
                 if(ammo > 0){
                     screen.setTextColor(11);
@@ -200,7 +226,7 @@ class Main extends State {
                             if(coins >= 5){
                                 coins -= 5;
                                 seeds++;
-                                message = "Purchaced a seed for 5 coins.";
+                                message = "Purchased a seed for 5 coins.";
                             }else{
                                 message = "Not enough coins for seeds.";
                             }
@@ -209,7 +235,7 @@ class Main extends State {
                             if(hasGun && coins >= 10){
                                 coins -= 10;
                                 ammo += 5;
-                                message = "Purchaced ammo for 10 coins.";
+                                message = "Purchased ammo for 10 coins.";
                             }else{
                                 message = "Not enough coins for ammo.";
                             }
@@ -218,7 +244,7 @@ class Main extends State {
                             if(coins >= 100 && lives < 5){
                                 coins -= 100;
                                 lives++;
-                                message = "Purchaced life for 100 coins.";
+                                message = "Purchased life for 100 coins.";
                             }else{
                                 if(lives == 5){
                                     message = "Max lives already reached.";
@@ -231,7 +257,7 @@ class Main extends State {
                             if (!hasYoyo && coins >= 50) {
                                 hasYoyo = true;
                                 coins -= 50;
-                                message = "Purchaced Yoyo for 50 coins.";
+                                message = "Purchased Yoyo for 50 coins.";
                             }else{
                                 if(hasYoyo){
                                     message = "You already own the Yoyo.";    
@@ -257,7 +283,7 @@ class Main extends State {
                             if(!hasGun && coins >= 1000 ){
                                 hasGun = true;
                                 coins -= 1000;
-                                message = "Purchaced Gun for 1000 coins.";
+                                message = "Purchased Gun for 1000 coins.";
                             }else{
                                 if(hasGun){
                                     message = "You already own the Gun.";    
@@ -278,27 +304,56 @@ class Main extends State {
                     zombies = new ZombieImpl(waveNum);
                 }
                 
-                if(!hasYoyo)notHas.draw(screen, 12, 90);
-                if(!hasSword)notHas.draw(screen, 12, 116);
+                if(!hasYoyo)notHas.draw(screen, 50, 90);
+                if(!hasSword)notHas.draw(screen, 50, 116);
                 if(!hasGun){
-                    notHas.draw(screen, 12, 38);
-                    notHas.draw(screen, 12, 142);
+                    notHas.draw(screen, 50, 38);
+                    notHas.draw(screen, 50, 142);
                 }
 
                 screen.setTextColor(11);
-                screen.setTextPosition(34, 20);
+                screen.setTextPosition(100, 20);
                 screen.print("Coins: " + coins);
                 
-                screen.setTextColor(11);
-                screen.setTextPosition(34, 100);
+                screen.setTextPosition(0, 170);
                 screen.print("Press C to start the next day");
                 
                 screen.setTextColor(9);
-                screen.setTextPosition(34, 130);
+                screen.setTextPosition(0, 0);
                 screen.print(message);
                 
                 //draw purchaceSelect
-                screen.drawRect(12, 12 + purchaceSelect * 26, 17, 17, 9);
+                screen.drawRect(50, 12 + purchaceSelect * 26, 17, 17, 9);
+                
+                coin.draw(screen, 1, 16);
+                screen.setTextColor(11);
+                screen.setTextPosition(9, 18);
+                screen.print("x5");//seed
+                
+                 coin.draw(screen, 1, 16 + 1 * 26);
+                screen.setTextColor(11);
+                screen.setTextPosition(9, 18 + 1 * 26);
+                screen.print("x10");//ammo
+                
+                coin.draw(screen, 1, 16 + 2 * 26);
+                screen.setTextColor(11);
+                screen.setTextPosition(9, 18 + 2 * 26);
+                screen.print("x100");//health
+                
+                coin.draw(screen, 1, 16 + 3 * 26);
+                screen.setTextColor(11);
+                screen.setTextPosition(9, 18 + 3 * 26);
+                screen.print("x50");//yoyo
+                
+                coin.draw(screen, 1, 16 + 4 * 26);
+                screen.setTextColor(11);
+                screen.setTextPosition(9, 18 + 4 * 26);
+                screen.print("x150");//sword
+                
+                coin.draw(screen, 1, 16 + 5 * 26);
+                screen.setTextColor(11);
+                screen.setTextPosition(9, 18 + 5 * 26);
+                screen.print("x1,000");//gun
 
                 break;
             case 3:
@@ -346,24 +401,7 @@ class Main extends State {
         screen.flush();
     }
 
-    void moveZombies() {
-        for (int i = 0; i < zombies.getSize(); i++) {
-            if (zombies.getHealth(i) <= 0) {
-                zombies.setHealth(i, 10);
-                zombies.getZombie(i).x = 222;
-                zombies.getZombie(i).y = 60 + Math.random(0, 5) * 24;
-                coins++;
-            }
-            if (zombies.getCooldown(i) > 0) {
-                zombies.setCooldown(i, zombies.getCooldown(i) - 1);
-                zombies.getZombie(i).hurt();
-            } else {
-                zombies.getZombie(i).x -= 0.1f;
-                zombies.getZombie(i).walk();
-            }
-            if (zombies.getZombie(i).x < 0) zombies.getZombie(i).x = 220;
-        }
-    }
+    
     void drawZombies() {
         for (Zombie z: zombies.getAllZombies()) {
             z.draw(screen);
@@ -405,25 +443,30 @@ class Main extends State {
 
     void itemAction(int hand) {
         switch (hand) {
-            case 0: //planter. Player starts with shovel so always has shovel.
+            case 0: //planter. Player starts with planter so always has planter. Plants and harvests crops.
             
-                if (!containsPlant() && seeds > 0 && timeToPlant > 45) {
+                if (!plants.tileContainsPlant(hx, hy) && seeds > 0 && timeToPlant > 45) {
                     timeToPlant = 0;
-                    Coffea n = new Coffea();
-                    n.x = 6 + hx * 24;
-                    n.y = 60 + hy * 24;
-                    for (int i = 0; i < plants.length; i++) {
-                        if (plants[i] == null) {
-                            plants[i] = n;
-                            break;
-                        }
-                    }
+                    plants.plantSeed(hx, hy);
                     seeds--;
                 } else if (seeds > 0) {
                     timeToPlant++;
+                }else if(plants.tileContainsPlant(hx, hy) ){
+                    switch(plants.tileContainsItem(hx, hy)){
+                        case 0:
+                            flower++;
+                            break;
+                        case 1:
+                            fruit++;
+                            break;
+                        case 2:
+                            beans++;
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 hero.plant();
-            
                 break;
             case 1: //shovel. Player starts with shovel
                 hero.shovel();
@@ -483,15 +526,6 @@ class Main extends State {
         return zx <= hx + adist && zx >= hx + bdist;
     }
 
-    boolean containsPlant() {
-        for (Coffea c: plants) {
-            if (c == null) continue;
-            if (c.x == 6 + hx * 24 && c.y == 60 + hy * 24) return true;
-            // if(c.x == hx && c.y == hy) return true;
-        }
-        return false;
-    }
-
     void drawLives() {
         switch (state) {
             case 1:
@@ -507,10 +541,9 @@ class Main extends State {
         }
     }
 
-    void drawPlants() {
-        for (Coffea c: plants) {
+     void drawPlants() {
+        for (Coffea c: plants.getAllPlants()) {
             if (c == null) continue;
-            c.idle();
             c.draw(screen);
         }
     }

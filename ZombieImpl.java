@@ -23,6 +23,27 @@ class ZombieImpl {
         }
     }
     
+    //updates the zombie positions and manages coin drops
+    int moveZombies(int coins) {
+        for (int i = 0; i < getSize(); i++) {
+            if (getHealth(i) <= 0) {
+                setHealth(i, 10);
+                getZombie(i).x = 222;
+                getZombie(i).y = 60 + Math.random(0, 5) * 24;
+                coins++;
+            }
+            if (getCooldown(i) > 0) {
+                setCooldown(i, getCooldown(i) - 1);
+                getZombie(i).hurt();
+            } else {
+                getZombie(i).x -= 0.1f;
+                getZombie(i).walk();
+            }
+            if (getZombie(i).x < 0) getZombie(i).x = 220;
+        }
+        return coins
+    }
+    
     public int getSize(){
         return wave.length;
     }
