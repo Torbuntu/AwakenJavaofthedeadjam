@@ -121,3 +121,23 @@ Added:
 
 Updated:
 * Cleaned up some game logic in the code, was a good overhaul effort. 
+
+
+## Day8
+
+| Showcase |
+|----|
+| ![](Showcase/day8.gif?raw=true) |
+
+Added:
+* Shop page (end of each day)
+* Sword, Gun and Ammo assets
+* Player can use the sword to attack (after purchace)
+* Items are hidden until purchaced
+
+Updated:
+* Default items are planter and shovel
+* Day is shorter
+* Collisions updated
+* Mechanic updates
+
