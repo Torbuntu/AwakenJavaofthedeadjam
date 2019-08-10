@@ -387,6 +387,9 @@
 		"/item/Coin.png": {
 			"sdcard": false,
 			"implements": ""
+		},
+		"/Showcase/day9.gif": {
+			"sdcard": false
 		}
 	}
 }

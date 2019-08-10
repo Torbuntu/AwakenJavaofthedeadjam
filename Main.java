@@ -192,19 +192,19 @@ class Main extends State {
                 screen.drawLine(8.0f, 32.0f, time, 32.0f, 14, false);
 
                 screen.setTextColor(11);
-                screen.setTextPosition(100, 12);
+                screen.setTextPosition(100, 8);
                 screen.print("Coins: " + coins);
 
-                screen.setTextPosition(100, 20);
+                screen.setTextPosition(100, 16);
                 screen.print("Seeds: " + seeds);
                 
-                screen.setTextPosition(100, 28);
+                screen.setTextPosition(100, 24);
                 screen.print("Flowers: " + flower);
                 
-                screen.setTextPosition(100, 36);
+                screen.setTextPosition(100, 32);
                 screen.print("Fruits: " + fruit);
                 
-                screen.setTextPosition(100, 44);
+                screen.setTextPosition(100, 40);
                 screen.print("Beans: " + beans);
                 
                 if(ammo > 0){
