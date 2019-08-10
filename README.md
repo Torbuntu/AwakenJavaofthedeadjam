@@ -141,3 +141,19 @@ Updated:
 * Collisions updated
 * Mechanic updates
 
+## Day8
+
+| Showcase |
+|----|
+| ![](Showcase/day9.gif?raw=true) |
+
+Added: 
+* MaxLives container, buying lives now means number of containers.
+* Plants now grow and are harvestable with the planter.
+* New updated assets
+
+Updated:
+* A few asset updates
+* Shop screen fixed to show prices
+* Added a new java file for handling plants. 
+* Cleaned up placements of printed text.
