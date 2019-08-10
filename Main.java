@@ -51,7 +51,7 @@ class Main extends State {
     //inventory items:
     int coins, seeds;
 
-    int hx, hy, left, right, cooldown, plantCount, timeToPlant, lives, waveNum, purchaceSelect, ammo;
+    int hx, hy, left, right, cooldown, plantCount, timeToPlant, lives, maxLives, waveNum, purchaceSelect, ammo;
     int state; //0 = title, 1=game, 2=pre-day, 3=pause/inventory, 4=game-over
 
     //inventory variables
@@ -105,7 +105,8 @@ class Main extends State {
         zombies = new ZombieImpl(waveNum);
         plants = new CoffeaImpl();
 
-        lives = 5;
+        lives = 3;
+        maxLives = 3;
         coins = 0;
         seeds = 1; //Start you off with one lonely seed. Don't screw it up! :D
         timeToPlant = 0;
@@ -241,12 +242,12 @@ class Main extends State {
                             }
                             break;
                         case 2://health
-                            if(coins >= 100 && lives < 5){
-                                coins -= 100;
-                                lives++;
-                                message = "Purchased life for 100 coins.";
+                            if(coins >= 500 && maxLives < 5){
+                                coins -= 500;
+                                maxLives++;
+                                message = "Purchased extra life for 500 coins.";
                             }else{
-                                if(lives == 5){
+                                if(maxLives == 5){
                                     message = "Max lives already reached.";
                                 }else{
                                     message = "Not enough coins for lives.";
@@ -529,8 +530,11 @@ class Main extends State {
     void drawLives() {
         switch (state) {
             case 1:
+                for(int j = 0; j < maxLives; j++){
+                    screen.drawRect((7 + j * 24), 0, 9, 9, 7);
+                }
                 for (int i = 0; i < lives; i++) {
-                    heart.draw(screen, (float)(8 + i * 24), 0.0f);
+                    heart.draw(screen, (float)(8 + i * 24), 1.0f);
                 }
                 break;
             case 3:
