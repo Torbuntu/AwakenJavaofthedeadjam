@@ -133,7 +133,7 @@ class Main extends State {
     void update() {
         screen.clear(0);
         switch (state) {
-            case 0:
+            case 0://title screen
                 if (Button.C.justPressed()) {
                     state = 1;
                 }
@@ -157,7 +157,7 @@ class Main extends State {
                     screen.print("(" + i + ")");
                 }
                 break;
-            case 1:
+            case 1: //Game play screen
                 playField.draw(screen, 0.0f, 0.0f);
                 
                 if (cooldown > 0) cooldown--;
@@ -186,33 +186,14 @@ class Main extends State {
                     message = "";
                     plants.updatePlants();
                     state = 2;
+                    purchaceSelect = -1;
                 }
 
                 //Day meter
                 screen.drawLine(8.0f, 32.0f, time, 32.0f, 14, false);
 
-                screen.setTextColor(11);
-                screen.setTextPosition(100, 8);
-                screen.print("Coins: " + coins);
-
-                screen.setTextPosition(100, 16);
-                screen.print("Seeds: " + seeds);
+                drawQuantities();
                 
-                screen.setTextPosition(100, 24);
-                screen.print("Flowers: " + flower);
-                
-                screen.setTextPosition(100, 32);
-                screen.print("Fruits: " + fruit);
-                
-                screen.setTextPosition(100, 40);
-                screen.print("Beans: " + beans);
-                
-                if(ammo > 0){
-                    screen.setTextColor(11);
-                    screen.setTextPosition(100, 28);
-                    screen.print("Ammo: " + ammo);
-                }
-
                 if (Button.C.justPressed()) state = 3;
 
                 break;
@@ -245,6 +226,7 @@ class Main extends State {
                             if(coins >= 500 && maxLives < 5){
                                 coins -= 500;
                                 maxLives++;
+                                lives++;
                                 message = "Purchased extra life for 500 coins.";
                             }else{
                                 if(maxLives == 5){
@@ -325,37 +307,7 @@ class Main extends State {
                 
                 //draw purchaceSelect
                 screen.drawRect(50, 12 + purchaceSelect * 26, 17, 17, 9);
-                
-                coin.draw(screen, 1, 16);
-                screen.setTextColor(11);
-                screen.setTextPosition(9, 18);
-                screen.print("x5");//seed
-                
-                 coin.draw(screen, 1, 16 + 1 * 26);
-                screen.setTextColor(11);
-                screen.setTextPosition(9, 18 + 1 * 26);
-                screen.print("x10");//ammo
-                
-                coin.draw(screen, 1, 16 + 2 * 26);
-                screen.setTextColor(11);
-                screen.setTextPosition(9, 18 + 2 * 26);
-                screen.print("x100");//health
-                
-                coin.draw(screen, 1, 16 + 3 * 26);
-                screen.setTextColor(11);
-                screen.setTextPosition(9, 18 + 3 * 26);
-                screen.print("x50");//yoyo
-                
-                coin.draw(screen, 1, 16 + 4 * 26);
-                screen.setTextColor(11);
-                screen.setTextPosition(9, 18 + 4 * 26);
-                screen.print("x150");//sword
-                
-                coin.draw(screen, 1, 16 + 5 * 26);
-                screen.setTextColor(11);
-                screen.setTextPosition(9, 18 + 5 * 26);
-                screen.print("x1,000");//gun
-
+                drawPrices();
                 break;
             case 3:
                 inventoryScreen.draw(screen, 0.0f, 0.0f);
@@ -415,25 +367,13 @@ class Main extends State {
             hero.idle();
             timeToPlant = 0;
         }
-        if (Button.Down.justPressed() && hy < 4) {
-            hy += 1;
-        }
-        if (Button.Up.justPressed() && hy > 0) {
-            hy -= 1;
-        }
-        if (Button.Right.justPressed() && hx < 8) {
-            hx += 1;
-        }
-        if (Button.Left.justPressed() && hx > 0) {
-            hx -= 1;
-        }
+        if (Button.Down.justPressed() && hy < 4) hy += 1;
+        if (Button.Up.justPressed() && hy > 0) hy -= 1;
+        if (Button.Right.justPressed() && hx < 8)  hx += 1;
+        if (Button.Left.justPressed() && hx > 0)  hx -= 1;
 
-        if (Button.A.isPressed() && cooldown == 0) {
-            itemAction(left);
-        }
-        if (Button.B.isPressed() && cooldown == 0) {
-            itemAction(right);
-        }
+        if (Button.A.isPressed() && cooldown == 0) itemAction(left);
+        if (Button.B.isPressed() && cooldown == 0)  itemAction(right);
 
         if (cooldown > 0) hero.hurt();
 
@@ -471,41 +411,17 @@ class Main extends State {
                 break;
             case 1: //shovel. Player starts with shovel
                 hero.shovel();
-                for (int i = 0; i < zombies.getSize(); i++) {
-                    if (zombies.getZombie(i).y == hero.y) {
-                        if (hit(zombies.getZombie(i).x, hero.x, 26, 8)) {
-                            zombies.getZombie(i).x += 6;
-                            zombies.setCooldown(i, 80);
-                            zombies.setHealth(i, zombies.getHealth(i) - 4);
-                        }
-                    }
-                }
+                zombies.checkShovel(hero.x, hero.y);
                 break;
             case 2: //Yoyo.
                 if( !hasYoyo ) break;
                 hero.yoyo();
-                for (int i = 0; i < zombies.getSize(); i++) {
-                    if (zombies.getZombie(i).y == hero.y) {
-                        if (hit(zombies.getZombie(i).x, hero.x, 30, 8)) {
-                            zombies.getZombie(i).x += 1;
-                            zombies.setCooldown(i, 10);
-                            zombies.setHealth(i, zombies.getHealth(i) - 1);
-                        }
-                    }
-                }
+                zombies.checkYoyo(hero.x, hero.y);
                 break;
             case 3://sword
                 if(!hasSword)break;
                 hero.sword();
-                for (int i = 0; i < zombies.getSize(); i++) {
-                    if (zombies.getZombie(i).y == hero.y) {
-                        if (hit(zombies.getZombie(i).x, hero.x, 18, 8)) {
-                            zombies.getZombie(i).x += 20;
-                            zombies.setCooldown(i, 15);
-                            zombies.setHealth(i, zombies.getHealth(i) - 10);
-                        }
-                    }
-                }
+                zombies.checkSword(hero.x, hero.y);
                 break;
             case 4://gun
                 if(!hasGun)break;
@@ -570,6 +486,64 @@ class Main extends State {
                 gun.draw(screen, handX, 8);
                 break;
         }
+    }
+    
+    //draws the quantities of items in game screen
+    void drawQuantities(){
+        screen.setTextColor(11);
+        screen.setTextPosition(100, 8);
+        screen.print("Coins: " + coins);
+
+        screen.setTextPosition(100, 16);
+        screen.print("Seeds: " + seeds);
+        
+        screen.setTextPosition(100, 24);
+        screen.print("Flowers: " + flower);
+        
+        screen.setTextPosition(100, 32);
+        screen.print("Fruits: " + fruit);
+        
+        screen.setTextPosition(100, 40);
+        screen.print("Beans: " + beans);
+        
+        if(ammo > 0){
+            screen.setTextColor(11);
+            screen.setTextPosition(100, 28);
+            screen.print("Ammo: " + ammo);
+        }
+    }
+    
+    //Draws the prices of items in the shop screen
+    void drawPrices(){
+        coin.draw(screen, 1, 16);
+        screen.setTextColor(11);
+        screen.setTextPosition(9, 18);
+        screen.print("x5");//seed
+        
+         coin.draw(screen, 1, 16 + 1 * 26);
+        screen.setTextColor(11);
+        screen.setTextPosition(9, 18 + 1 * 26);
+        screen.print("x10");//ammo
+        
+        coin.draw(screen, 1, 16 + 2 * 26);
+        screen.setTextColor(11);
+        screen.setTextPosition(9, 18 + 2 * 26);
+        screen.print("x500");//health
+        
+        coin.draw(screen, 1, 16 + 3 * 26);
+        screen.setTextColor(11);
+        screen.setTextPosition(9, 18 + 3 * 26);
+        screen.print("x50");//yoyo
+        
+        coin.draw(screen, 1, 16 + 4 * 26);
+        screen.setTextColor(11);
+        screen.setTextPosition(9, 18 + 4 * 26);
+        screen.print("x150");//sword
+        
+        coin.draw(screen, 1, 16 + 5 * 26);
+        screen.setTextColor(11);
+        screen.setTextPosition(9, 18 + 5 * 26);
+        screen.print("x1,000");//gun
     }
 
 }

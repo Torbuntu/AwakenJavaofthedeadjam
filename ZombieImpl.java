@@ -44,6 +44,41 @@ class ZombieImpl {
         return coins
     }
     
+    void checkHit(float herox, float heroy, int x, int cooldown, int back, int damage){
+        for (int i = 0; i < getSize(); i++) {
+            if (getZombie(i).y == heroy) {
+                if (hit(getZombie(i).x, herox, x, 8)) {
+                    getZombie(i).x += back;
+                    setCooldown(i, cooldown);
+                    setHealth(i, getHealth(i) - damage);
+                }
+            }
+        }
+    }
+    
+    //shovel hit
+    void checkShovel(float herox, float heroy){
+        checkHit(herox, heroy, 26, 80, 6, 4);
+    }
+    
+    //yoyo hit
+    void checkYoyo(float herox, float heroy){
+        checkHit(herox, heroy, 30, 10, 1, 1);
+    }
+    
+    //sword hit
+    void checkSword(float herox, float heroy){
+        checkHit(herox, heroy, 18, 15, 20, 10);
+    }
+    
+    //gun hit
+    
+    
+    
+    boolean hit(float zx, float hx, int adist, int bdist) {
+        return zx <= hx + adist && zx >= hx + bdist;
+    }
+    
     public int getSize(){
         return wave.length;
     }
