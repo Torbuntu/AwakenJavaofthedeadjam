@@ -44,6 +44,14 @@ class ZombieImpl {
         return coins
     }
     
+    
+    boolean zombieHitPlayer(float herox, float heroy) {
+        for (Zombie z: wave) {
+            if (z.y == heroy && z.x <= herox + 12 && z.x > herox + 3) return true;
+        }
+        return false;
+    }
+    
     void checkHit(float herox, float heroy, int x, int cooldown, int back, int damage){
         for (int i = 0; i < getSize(); i++) {
             if (getZombie(i).y == heroy) {

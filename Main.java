@@ -51,7 +51,7 @@ class Main extends State {
     //inventory items:
     int coins, seeds;
 
-    int hx, hy, left, right, cooldown, plantCount, timeToPlant, lives, maxLives, waveNum, purchaceSelect, ammo;
+    int hx, hy, left, right, cooldown, plantCount, timeToPlant, lives, maxLives, waveNum, purchaceSelect, ammo, day;
     int state; //0 = title, 1=game, 2=pre-day, 3=pause/inventory, 4=game-over
 
     //inventory variables
@@ -89,7 +89,6 @@ class Main extends State {
         
         restart();
         
-        
         System.out.println("::: Finished init :::");
     }
     
@@ -97,7 +96,8 @@ class Main extends State {
         hx = 1;
         hy = 1;
         time = 8.0f;
-
+        day = 1;
+        
         left = 0; //planter
         right = 1; //shovel
         
@@ -165,7 +165,7 @@ class Main extends State {
                 //move zombies and add coins for kills
                 coins = zombies.moveZombies(coins);
                 
-                if (zombieHitPlayer() && cooldown == 0) {
+                if (zombies.zombieHitPlayer(hero.x, hero.y) && cooldown == 0) {
                     lives--;
                     if(lives == 0) {
                         state = 4;
@@ -179,22 +179,19 @@ class Main extends State {
                 hero.draw(screen);
                 drawZombies();
                 drawLives();
-
-                time += 0.1f;
-                if (time >= 158) {
-                    time = 8.0f;
-                    message = "";
-                    plants.updatePlants();
-                    state = 2;
-                    purchaceSelect = -1;
-                }
+                
 
                 //Day meter
                 screen.drawLine(8.0f, 32.0f, time, 32.0f, 14, false);
 
                 drawQuantities();
                 
+                screen.setTextPosition(0, 20);
+                screen.print("Day: "+day);
+                
                 if (Button.C.justPressed()) state = 3;
+                
+                updateTime();
 
                 break;
             case 2://Shop screen
@@ -353,11 +350,16 @@ class Main extends State {
 
         screen.flush();
     }
-
     
-    void drawZombies() {
-        for (Zombie z: zombies.getAllZombies()) {
-            z.draw(screen);
+    void updateTime(){
+        time += 0.1f;
+        if (time >= 158) {
+            time = 8.0f;
+            message = "";
+            plants.updatePlants();
+            state = 2;
+            purchaceSelect = -1;
+            day++;
         }
     }
 
@@ -432,17 +434,6 @@ class Main extends State {
         }
     }
 
-    boolean zombieHitPlayer() {
-        for (Zombie z: zombies.getAllZombies()) {
-            if (z.y == hero.y && z.x <= hero.x + 12 && z.x > hero.x + 3) return true;
-        }
-        return false;
-    }
-
-    boolean hit(float zx, float hx, int adist, int bdist) {
-        return zx <= hx + adist && zx >= hx + bdist;
-    }
-
     void drawLives() {
         switch (state) {
             case 1:
@@ -461,10 +452,16 @@ class Main extends State {
         }
     }
 
-     void drawPlants() {
+    void drawPlants() {
         for (Coffea c: plants.getAllPlants()) {
             if (c == null) continue;
             c.draw(screen);
+        }
+    }
+    
+    void drawZombies() {
+        for (Zombie z: zombies.getAllZombies()) {
+            z.draw(screen);
         }
     }
 
@@ -520,7 +517,7 @@ class Main extends State {
         screen.setTextPosition(9, 18);
         screen.print("x5");//seed
         
-         coin.draw(screen, 1, 16 + 1 * 26);
+        coin.draw(screen, 1, 16 + 1 * 26);
         screen.setTextColor(11);
         screen.setTextPosition(9, 18 + 1 * 26);
         screen.print("x10");//ammo
