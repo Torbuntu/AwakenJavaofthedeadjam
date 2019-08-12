@@ -158,3 +158,16 @@ Updated:
 * Shop screen fixed to show prices
 * Added a new java file for handling plants. 
 * Cleaned up placements of printed text.
+
+
+## Day10
+
+
+| Showcase |
+|----|
+| ![](Showcase/day10.gif?raw=true) |
+
+Updated:
+* Zombies now eat plants
+* Plants have a dead state
+* Player can clean up dead plants with the planter tool
