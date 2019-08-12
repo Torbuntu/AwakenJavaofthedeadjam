@@ -1,10 +1,15 @@
 import Math;
 import entities.enemies.zombie.Zombie;
+import entities.plant.Coffea;
+import CoffeaImpl;
 
 class ZombieImpl {
-    int[] eCool;
+    
     Zombie[] wave;
+    int[] eCool;
     int[] health;
+    int[] eating;
+    
     
     public ZombieImpl(int start){
         makeWave(start);
@@ -14,18 +19,46 @@ class ZombieImpl {
         wave = new Zombie[amount];
         eCool = new int[amount];
         health = new int[amount];
+        eating = new int[amount];
+        
         for(int i = 0; i < amount; i++){
             wave[i] = new Zombie();
             wave[i].x = 220;
             wave[i].y = 60+Math.random(0,5)*24;
             eCool[i] = 0;
             health[i] = 10;
+            eating[i] = 0;
         }
     }
     
     //updates the zombie positions and manages coin drops
-    int moveZombies(int coins) {
+    int moveZombies(int coins, CoffeaImpl plants) {
         for (int i = 0; i < getSize(); i++) {
+            
+            for(int j = 0; j < 45; j++){
+                //if the plant is null or already dead continue to next plant
+                if(plants.getPlant(j) == null || plants.getState(j) == 5) continue;
+                
+                //if zombie is on plant tile
+                if(getZombie(i).x < plants.getPlant(j).x + 12 
+                && getZombie(i).x > plants.getPlant(j).x + 8
+                && getZombie(i).y == plants.getPlant(j).y){
+                    if(eating[i] == 0) getZombie(i).eat();
+                    
+                    if(eating[i] > 100){
+                        plants.getPlant(j).dead();  
+                        plants.setState(5, j);
+                        eating[i] = 0;
+                    } else{
+                        eating[i]++;
+                    }
+                    
+                }else{
+                    eating[i] = 0;
+                }
+            }
+            
+            
             if (getHealth(i) <= 0) {
                 setHealth(i, 10);
                 getZombie(i).x = 222;
@@ -36,6 +69,7 @@ class ZombieImpl {
                 setCooldown(i, getCooldown(i) - 1);
                 getZombie(i).hurt();
             } else {
+                if(eating[i] > 0) continue;
                 getZombie(i).x -= 0.1f;
                 getZombie(i).walk();
             }
@@ -43,7 +77,6 @@ class ZombieImpl {
         }
         return coins
     }
-    
     
     boolean zombieHitPlayer(float herox, float heroy) {
         for (Zombie z: wave) {
@@ -109,6 +142,14 @@ class ZombieImpl {
     }
     public void setHealth(int idx, int h){
         health[idx] = h;
+    }
+
+    public int getEating(int idx){
+        return eating[idx];
+    }
+    
+    public void setEating(int idx, int e){
+        eating[idx] = e;
     }
 
 }

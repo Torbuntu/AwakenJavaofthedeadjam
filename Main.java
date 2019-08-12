@@ -163,7 +163,7 @@ class Main extends State {
                 if (cooldown > 0) cooldown--;
                 
                 //move zombies and add coins for kills
-                coins = zombies.moveZombies(coins);
+                coins = zombies.moveZombies(coins, plants);
                 
                 if (zombies.zombieHitPlayer(hero.x, hero.y) && cooldown == 0) {
                     lives--;

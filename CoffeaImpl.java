@@ -42,6 +42,11 @@ class CoffeaImpl{
     int tileContainsItem(int x, int y){
         for(int i = 0; i < plants.length; i++){
             if(plants[i] == null)continue;
+            if(getState(i) == 5){
+                plants[i] = null;
+                plantStates[i] = 0;
+                continue;
+            }
             if(plants[i].x == 6+x*24 && plants[i].y == 60+y*24){
                 if(plantStates[i] == 4){
                     plants[i] = null;
@@ -77,7 +82,18 @@ class CoffeaImpl{
         }
     }
     
-    Coffea[] getAllPlants(){
+    void setState(int st, int idx){
+        plantStates[idx] = st;
+    }
+    int getState(int idx){
+        return plantStates[idx];
+    }
+    
+    public Coffea getPlant(int idx){
+        return plants[idx];
+    }
+    
+    public Coffea[] getAllPlants(){
         return plants;
     }
 
