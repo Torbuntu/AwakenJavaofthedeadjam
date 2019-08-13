@@ -48,7 +48,7 @@ class CoffeaImpl{
                 continue;
             }
             if(plants[i].x == 6+x*24 && plants[i].y == 60+y*24){
-                if(plantStates[i] == 4){
+                if(getState(i) == 4){
                     plants[i] = null;
                     plantStates[i] = 0;
                     

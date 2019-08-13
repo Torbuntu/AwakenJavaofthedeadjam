@@ -63,6 +63,12 @@ class Main extends State {
     
     String message;
 
+
+    //tmp bullet stuff
+    int bx, by;
+    boolean shooting;
+
+
     // start the game using Main as the initial state
     public static void main(String[] args) {
         Game.run(TIC80.font(), new Main());
@@ -107,7 +113,7 @@ class Main extends State {
 
         lives = 3;
         maxLives = 3;
-        coins = 0;
+        coins = 1000000;
         seeds = 1; //Start you off with one lonely seed. Don't screw it up! :D
         timeToPlant = 0;
         handSelect = 0;
@@ -122,6 +128,9 @@ class Main extends State {
         beans = 0;
         
         message = "";
+        
+        //tmp bullet
+        shooting = false;
     }
 
     // Might help in certain situations
@@ -162,6 +171,10 @@ class Main extends State {
                 
                 if (cooldown > 0) cooldown--;
                 
+                if( shooting ){
+                    updateBullet();
+                    screen.fillCircle(bx, by, 2, 1);
+                }
                 //move zombies and add coins for kills
                 coins = zombies.moveZombies(coins, plants);
                 
@@ -392,8 +405,6 @@ class Main extends State {
                     timeToPlant = 0;
                     plants.plantSeed(hx, hy);
                     seeds--;
-                } else if (seeds > 0) {
-                    timeToPlant++;
                 }else if(plants.tileContainsPlant(hx, hy) ){
                     switch(plants.tileContainsItem(hx, hy)){
                         case 0:
@@ -408,6 +419,8 @@ class Main extends State {
                         default:
                             break;
                     }
+                } else if (seeds > 0) {
+                    timeToPlant++;
                 }
                 hero.plant();
                 break;
@@ -426,11 +439,33 @@ class Main extends State {
                 zombies.checkSword(hero.x, hero.y);
                 break;
             case 4://gun
-                if(!hasGun)break;
+                if(!hasGun || ammo == 0 || shooting)break;
+                hero.walk();
+                shooting = true;
+                ammo--;
+                bx = (int)hero.x + 6;
+                by = (int)hero.y + 5;
+                
                 break;
             default:
                 //do nothing on no item
                 break;
+        }
+    }
+    
+    void updateBullet(){
+        for (int i = 0; i < zombies.getSize(); i++) {
+            if (zombies.getZombie(i).x > hero.x && bx + 1 >= zombies.getZombie(i).x && by >= zombies.getZombie(i).y && by <= zombies.getZombie(i).y+8 ) {
+                zombies.setHealth(i, 0);
+                shooting = false;
+                return;
+            }else{
+                bx++;
+            }
+            if(bx > 240) {
+                shooting = false;
+            }
+            
         }
     }
 
