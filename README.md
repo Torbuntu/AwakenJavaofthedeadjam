@@ -162,7 +162,6 @@ Updated:
 
 ## Day10
 
-
 | Showcase |
 |----|
 | ![](Showcase/day10.gif?raw=true) |
@@ -171,3 +170,18 @@ Updated:
 * Zombies now eat plants
 * Plants have a dead state
 * Player can clean up dead plants with the planter tool
+
+
+
+## Day11
+
+| Showcase |
+|----|
+| ![](Showcase/day11.gif?raw=true) |
+
+Added:
+* Gun now shoots and kills zombies using ammo.
+
+Updated:
+* Fixed a bug when harvesting and seed count is greater than 0
+
