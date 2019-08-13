@@ -113,7 +113,7 @@ class Main extends State {
 
         lives = 3;
         maxLives = 3;
-        coins = 1000000;
+        coins = 0;
         seeds = 1; //Start you off with one lonely seed. Don't screw it up! :D
         timeToPlant = 0;
         handSelect = 0;
