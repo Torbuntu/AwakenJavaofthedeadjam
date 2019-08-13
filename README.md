@@ -185,3 +185,8 @@ Added:
 Updated:
 * Fixed a bug when harvesting and seed count is greater than 0
 
+TODO:
+* Create a Survival Meter
+* Update the A:B icons in the Pause Menu to be flipped to correspond to the hardware buttons
+* Add/Update all Artwork Assets
+* Add craftable items.
