@@ -34,7 +34,6 @@ class CoffeaImpl{
         for (Coffea c: plants) {
             if (c == null) continue;
             if (c.x == 6 + x * 24 && c.y == 60 + y * 24) return true;
-            // if(c.x == hx && c.y == hy) return true;
         }
         return false;
     }
@@ -42,17 +41,20 @@ class CoffeaImpl{
     int tileContainsItem(int x, int y){
         for(int i = 0; i < plants.length; i++){
             if(plants[i] == null)continue;
-            if(getState(i) == 5){
-                plants[i] = null;
-                plantStates[i] = 0;
-                continue;
-            }
+           
             if(plants[i].x == 6+x*24 && plants[i].y == 60+y*24){
+                //Harvestable!
                 if(getState(i) == 4){
                     plants[i] = null;
                     plantStates[i] = 0;
                     
                     return Math.random(0, 3);
+                }
+                //Dead, clean it up.
+                if(getState(i) == 5){
+                    plants[i] = null;
+                    plantStates[i] = 0;
+                    continue;
                 }
             }
         }

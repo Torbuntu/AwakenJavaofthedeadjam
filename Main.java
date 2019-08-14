@@ -18,6 +18,11 @@ import item.Yoyo;
 import item.Sword;
 import item.Gun;
 import item.NotHas;
+import item.Fruit;
+import item.Flower;
+import item.Sapling;
+import item.Bean;
+import item.Ammo;
 import ZombieImpl;
 import CoffeaImpl;
 import item.Coin;
@@ -43,15 +48,21 @@ class Main extends State {
     Sword sword;
     Gun gun;
     
+    Fruit fruitIcon;
+    Flower flowerIcon;
+    Sapling saplingIcon;
+    Bean beanIcon;
+    Ammo ammoIcon;
+    
     Coin coin;
     
     //Item drops
     int flower, fruit, beans; //0,1,2
 
     //inventory items:
-    int coins, seeds;
+    int coins, saplling;
 
-    int hx, hy, left, right, cooldown, plantCount, timeToPlant, lives, maxLives, waveNum, purchaceSelect, ammo, day;
+    int hx, hy, left, right, cooldown, plantCount, timeToPlant, lives, maxLives, waveNum, purchaceSelect, ammo, day, survivalMeter;
     int state; //0 = title, 1=game, 2=pre-day, 3=pause/inventory, 4=game-over
 
     //inventory variables
@@ -90,8 +101,14 @@ class Main extends State {
         gun = new Gun();
         coin = new Coin();
         
+        fruitIcon = new Fruit();
+        flowerIcon = new Flower();
+        saplingIcon = new Sapling();
+        beanIcon = new Bean();
+        
         heart = new Heart();
         notHas = new NotHas();
+        ammoIcon = new Ammo();
         
         restart();
         
@@ -101,8 +118,9 @@ class Main extends State {
     void restart(){
         hx = 1;
         hy = 1;
-        time = 8.0f;
+        time = 0.0f;
         day = 1;
+        survivalMeter = 100;
         
         left = 0; //planter
         right = 1; //shovel
@@ -114,7 +132,7 @@ class Main extends State {
         lives = 3;
         maxLives = 3;
         coins = 0;
-        seeds = 1; //Start you off with one lonely seed. Don't screw it up! :D
+        saplling = 1; //Start you off with one lonely seed. Don't screw it up! :D
         timeToPlant = 0;
         handSelect = 0;
         
@@ -194,17 +212,18 @@ class Main extends State {
                 drawLives();
                 
 
-                //Day meter
-                screen.drawLine(8.0f, 32.0f, time, 32.0f, 14, false);
 
                 drawQuantities();
                 
-                screen.setTextPosition(0, 20);
+                screen.setTextPosition(0, 16);
                 screen.print("Day: "+day);
                 
                 if (Button.C.justPressed()) state = 3;
                 
+                //Day meter
                 updateTime();
+                screen.drawLine(0.0f, 12.0f, time, 12.0f, 14, false);
+                screen.drawLine(0.0f, 14.0f, (float)survivalMeter, 14.0f, 12, false);
 
                 break;
             case 2://Shop screen
@@ -214,13 +233,13 @@ class Main extends State {
                 
                 if (Button.A.justPressed()) {
                     switch(purchaceSelect){
-                        case 0://seeds
+                        case 0://saplling
                             if(coins >= 5){
                                 coins -= 5;
-                                seeds++;
+                                saplling++;
                                 message = "Purchased a seed for 5 coins.";
                             }else{
-                                message = "Not enough coins for seeds.";
+                                message = "Not enough coins for saplling.";
                             }
                             break;
                         case 1://ammo
@@ -305,8 +324,9 @@ class Main extends State {
                 }
 
                 screen.setTextColor(11);
-                screen.setTextPosition(100, 20);
-                screen.print("Coins: " + coins);
+                screen.setTextPosition(109, 20);
+                screen.print("x"+coins);
+                coin.draw(screen, 100, 20);
                 
                 screen.setTextPosition(0, 170);
                 screen.print("Press C to start the next day");
@@ -319,27 +339,39 @@ class Main extends State {
                 screen.drawRect(50, 12 + purchaceSelect * 26, 17, 17, 9);
                 drawPrices();
                 break;
-            case 3:
+            case 3:// Inventory Screen
                 inventoryScreen.draw(screen, 0.0f, 0.0f);
                 drawLives();
                 if (Button.C.justPressed()) state = 1;
                 if (Button.Left.justPressed() && handSelect > 0) handSelect--;
-                if (Button.Right.justPressed() && handSelect < 4) handSelect++;
+                if (Button.Right.justPressed() && handSelect < 7) handSelect++;
 
-                if (Button.A.justPressed() && right != handSelect) left = handSelect;
-                if (Button.B.justPressed() && left != handSelect) right = handSelect;
+                if (Button.A.justPressed() && left != handSelect) right = handSelect;
+                if (Button.B.justPressed() && right != handSelect) left = handSelect;
                 
                 if(!hasYoyo && right == 2) right = -1;
                 if(!hasYoyo && left == 2) left = -1;
-                if(!hasYoyo)notHas.draw(screen, 56, 38);
+                if(!hasYoyo)notHas.draw(screen, 8+24*2, 38);
                 
                 if(!hasSword && right == 3) right = -1;
                 if(!hasSword && left == 3) left = -1;
-                if(!hasSword)notHas.draw(screen, 80, 38);
+                if(!hasSword)notHas.draw(screen, 8+24*3, 38);
                 
                 if(!hasGun && right == 4) right = -1;
                 if(!hasGun && left == 4) left = -1;
-                if(!hasGun)notHas.draw(screen, 104, 38);
+                if(!hasGun)notHas.draw(screen, 8+24*4, 38);
+                
+                if(fruit == 0 && right == 5) right = -1;
+                if(fruit == 0 && left == 5) left = -1;
+                if(fruit == 0) notHas.draw(screen, 8+24*5, 38);
+                
+                if(flower == 0 && right == 6) right = -1;
+                if(flower == 0 && left == 6) left = -1;
+                if(flower == 0) notHas.draw(screen, 8+24*6, 38);
+                
+                if(beans == 0 && right == 7) right = -1;
+                if(beans == 0 && left == 7) left = -1;
+                if(beans == 0) notHas.draw(screen, 8+24*7, 38);
 
                 //draw
                 drawInventory(8, left);
@@ -365,14 +397,15 @@ class Main extends State {
     }
     
     void updateTime(){
-        time += 0.1f;
-        if (time >= 158) {
-            time = 8.0f;
+        time += 0.05f;
+        if (time >= 100) {
+            time = 0.0f;
             message = "";
             plants.updatePlants();
             state = 2;
-            purchaceSelect = -1;
+            purchaceSelect = -2;//no select
             day++;
+            survivalMeter--;
         }
     }
 
@@ -382,13 +415,25 @@ class Main extends State {
             hero.idle();
             timeToPlant = 0;
         }
-        if (Button.Down.justPressed() && hy < 4) hy += 1;
-        if (Button.Up.justPressed() && hy > 0) hy -= 1;
-        if (Button.Right.justPressed() && hx < 8)  hx += 1;
-        if (Button.Left.justPressed() && hx > 0)  hx -= 1;
+        if (Button.Down.justPressed() && hy < 4) { 
+            hy += 1;
+            timeToPlant = 0;
+        }
+        if (Button.Up.justPressed() && hy > 0) {
+            hy -= 1;
+            timeToPlant = 0;
+        }
+        if (Button.Right.justPressed() && hx < 8)  {
+            hx += 1;
+            timeToPlant = 0;
+        }
+        if (Button.Left.justPressed() && hx > 0) {
+            hx -= 1;
+            timeToPlant = 0;
+        }
 
-        if (Button.A.isPressed() && cooldown == 0) itemAction(left);
-        if (Button.B.isPressed() && cooldown == 0)  itemAction(right);
+        if (Button.A.isPressed() && cooldown == 0) itemAction(right);
+        if (Button.B.isPressed() && cooldown == 0)  itemAction(left);
 
         if (cooldown > 0) hero.hurt();
 
@@ -401,10 +446,10 @@ class Main extends State {
         switch (hand) {
             case 0: //planter. Player starts with planter so always has planter. Plants and harvests crops.
             
-                if (!plants.tileContainsPlant(hx, hy) && seeds > 0 && timeToPlant > 45) {
+                if (!plants.tileContainsPlant(hx, hy) && saplling > 0 && timeToPlant > 45) {
                     timeToPlant = 0;
                     plants.plantSeed(hx, hy);
-                    seeds--;
+                    saplling--;
                 }else if(plants.tileContainsPlant(hx, hy) ){
                     switch(plants.tileContainsItem(hx, hy)){
                         case 0:
@@ -419,7 +464,7 @@ class Main extends State {
                         default:
                             break;
                     }
-                } else if (seeds > 0) {
+                } else if (saplling > 0) {
                     timeToPlant++;
                 }
                 hero.plant();
@@ -465,7 +510,6 @@ class Main extends State {
             if(bx > 240) {
                 shooting = false;
             }
-            
         }
     }
 
@@ -473,15 +517,15 @@ class Main extends State {
         switch (state) {
             case 1:
                 for(int j = 0; j < maxLives; j++){
-                    screen.drawRect((7 + j * 24), 0, 9, 9, 7);
+                    screen.drawRect((j * 12), 0, 9, 9, 7);
                 }
                 for (int i = 0; i < lives; i++) {
-                    heart.draw(screen, (float)(8 + i * 24), 1.0f);
+                    heart.draw(screen, (float)(1 + i * 12), 1.0f);
                 }
                 break;
             case 3:
                 for (int i = 0; i < lives; i++) {
-                    heart.draw(screen, (float)(12 + i * 24), 80.0f);
+                    heart.draw(screen, (float)(12 + i * 12), 80.0f);
                 }
                 break;
         }
@@ -523,26 +567,30 @@ class Main extends State {
     //draws the quantities of items in game screen
     void drawQuantities(){
         screen.setTextColor(11);
-        screen.setTextPosition(100, 8);
-        screen.print("Coins: " + coins);
 
-        screen.setTextPosition(100, 16);
-        screen.print("Seeds: " + seeds);
+        screen.setTextPosition(10, 27);
+        screen.print("x" + coins);
+        coin.draw(screen, 0, 24);
         
-        screen.setTextPosition(100, 24);
-        screen.print("Flowers: " + flower);
+        screen.setTextPosition(10, 38);
+        screen.print("x"+ammo);
+        ammoIcon.draw(screen, 0, 36);
         
-        screen.setTextPosition(100, 32);
-        screen.print("Fruits: " + fruit);
+        screen.setTextPosition(121, 10);
+        screen.print("x" + saplling);
+        saplingIcon.draw(screen, 112, 8);
         
-        screen.setTextPosition(100, 40);
-        screen.print("Beans: " + beans);
+        screen.setTextPosition(121, 34);
+        screen.print("x" + flower);
+        flowerIcon.draw(screen, 112, 30);
         
-        if(ammo > 0){
-            screen.setTextColor(11);
-            screen.setTextPosition(100, 28);
-            screen.print("Ammo: " + ammo);
-        }
+        screen.setTextPosition(169, 10);
+        screen.print("x" + fruit);
+        fruitIcon.draw(screen, 160, 8);
+        
+        screen.setTextPosition(169, 34);
+        screen.print("x" + beans);
+        beanIcon.draw(screen, 160, 30);
     }
     
     //Draws the prices of items in the shop screen

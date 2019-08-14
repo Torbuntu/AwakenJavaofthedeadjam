@@ -396,6 +396,29 @@
 		},
 		"/Showcase/day11.gif": {
 			"sdcard": false
+		},
+		"/item/Fruit.png": {
+			"implements": "",
+			"sdcard": false
+		},
+		"/item/Flower.png": {
+			"implements": "",
+			"sdcard": false
+		},
+		"/item/Sapling.png": {
+			"implements": "",
+			"sdcard": false
+		},
+		"/item/Bean.png": {
+			"implements": "",
+			"sdcard": false
+		},
+		"/item/Ammo.png": {
+			"implements": "",
+			"sdcard": false
+		},
+		"/Showcase/day12.gif": {
+			"sdcard": false
 		}
 	}
 }

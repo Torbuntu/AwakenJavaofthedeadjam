@@ -9,6 +9,7 @@ class ZombieImpl {
     int[] eCool;
     int[] health;
     int[] eating;
+    float[] speeds;
     
     
     public ZombieImpl(int start){
@@ -20,6 +21,7 @@ class ZombieImpl {
         eCool = new int[amount];
         health = new int[amount];
         eating = new int[amount];
+        speeds = new float[amount];
         
         for(int i = 0; i < amount; i++){
             wave[i] = new Zombie();
@@ -28,6 +30,7 @@ class ZombieImpl {
             eCool[i] = 0;
             health[i] = 10;
             eating[i] = 0;
+            speeds[i] = Math.random(0, 2) == 1 ? 0.26f : 0.1f;
         }
     }
     
@@ -37,25 +40,26 @@ class ZombieImpl {
             
             for(int j = 0; j < 45; j++){
                 //if the plant is null or already dead continue to next plant
-                if(plants.getPlant(j) == null || plants.getState(j) == 5) continue;
+                if(plants.getPlant(j) == null) continue;
                 
                 //if zombie is on plant tile
                 if(getZombie(i).x < plants.getPlant(j).x + 12 
                 && getZombie(i).x > plants.getPlant(j).x + 8
                 && getZombie(i).y == plants.getPlant(j).y){
-                    if(eating[i] == 0) getZombie(i).eat();
+                    if(plants.getState(j) == 5) {
+                        eating[i] = 0;
+                        continue;
+                    }
+                    eating[i]++;
+                    if(eating[i] == 1) getZombie(i).eat();
                     
                     if(eating[i] > 100){
                         plants.getPlant(j).dead();  
                         plants.setState(5, j);
                         eating[i] = 0;
-                    } else{
-                        eating[i]++;
-                    }
-                    
-                }else{
-                    eating[i] = 0;
+                    } 
                 }
+                
             }
             
             
@@ -70,7 +74,7 @@ class ZombieImpl {
                 getZombie(i).hurt();
             } else {
                 if(eating[i] > 0) continue;
-                getZombie(i).x -= 0.1f;
+                getZombie(i).x -= speeds[i];
                 getZombie(i).walk();
             }
             if (getZombie(i).x < 0) getZombie(i).x = 220;
