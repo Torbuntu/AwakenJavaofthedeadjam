@@ -190,3 +190,21 @@ TODO:
 * Update the A:B icons in the Pause Menu to be flipped to correspond to the hardware buttons
 * Add/Update all Artwork Assets
 * Add craftable items.
+
+
+## Day12
+
+| Showcase |
+|----|
+| ![](Showcase/day12.gif?raw=true) |
+
+Added:
+* Added new icons for items
+* Work on adding the craftable items started
+* Added survival meter
+
+Updated:
+* Zombies now have a 50/50 chance to spawn as sprinters
+* Zombies can now eat plants correctly
+* UI/UX has been overhauled on the game screen.
+* A:B buttons switched to match Pokitto
