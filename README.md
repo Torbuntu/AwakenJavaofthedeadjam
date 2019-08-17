@@ -208,3 +208,18 @@ Updated:
 * Zombies can now eat plants correctly
 * UI/UX has been overhauled on the game screen.
 * A:B buttons switched to match Pokitto
+
+
+
+## Day13
+
+| Showcase |
+|----|
+| ![](Showcase/day13.gif?raw=true) |
+
+Added:
+* Added Juice, Tea and Coffee consumables 
+
+Updated:
+* Items are now craftable
+* Can consume crafted items
