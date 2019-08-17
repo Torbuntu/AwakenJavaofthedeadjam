@@ -58,6 +58,7 @@ class Main extends State {
     
     //Item drops
     int flower, fruit, beans; //0,1,2
+    int juice, tea, coffee;
 
     //inventory items:
     int coins, saplling;
@@ -144,6 +145,10 @@ class Main extends State {
         flower = 0;
         fruit = 0;
         beans = 0;
+        
+        juice = 0;
+        tea = 0;
+        coffee = 0;
         
         message = "";
         
@@ -252,13 +257,13 @@ class Main extends State {
                             }
                             break;
                         case 2://health
-                            if(coins >= 500 && maxLives < 5){
+                            if(coins >= 500 && maxLives < 9){
                                 coins -= 500;
                                 maxLives++;
                                 lives++;
                                 message = "Purchased extra life for 500 coins.";
                             }else{
-                                if(maxLives == 5){
+                                if(maxLives == 9){
                                     message = "Max lives already reached.";
                                 }else{
                                     message = "Not enough coins for lives.";
@@ -346,8 +351,33 @@ class Main extends State {
                 if (Button.Left.justPressed() && handSelect > 0) handSelect--;
                 if (Button.Right.justPressed() && handSelect < 7) handSelect++;
 
+                if(Button.B.justPressed()){
+                    if(handSelect > 4){
+                        switch(handSelect){
+                            case 5:
+                                if(fruit >= 5){
+                                    fruit-=5;
+                                    juice++;
+                                }
+                                break;
+                            case 6:
+                                if(flower >= 5){
+                                    flower-=5;
+                                    tea++;
+                                }
+                                break;
+                            case 7:
+                                if(beans >= 5){
+                                    beans-=5;
+                                    coffee++;
+                                }
+                                break;
+                        }  
+                    }else{
+                        if(right != handSelect && handSelect < 5) left = handSelect;
+                    }
+                }
                 if (Button.A.justPressed() && left != handSelect) right = handSelect;
-                if (Button.B.justPressed() && right != handSelect) left = handSelect;
                 
                 if(!hasYoyo && right == 2) right = -1;
                 if(!hasYoyo && left == 2) left = -1;
@@ -361,18 +391,28 @@ class Main extends State {
                 if(!hasGun && left == 4) left = -1;
                 if(!hasGun)notHas.draw(screen, 8+24*4, 38);
                 
-                if(fruit == 0 && right == 5) right = -1;
-                if(fruit == 0 && left == 5) left = -1;
-                if(fruit == 0) notHas.draw(screen, 8+24*5, 38);
+                screen.setTextPosition(0, 160);
+                if(handSelect == 5 && fruit >= 5) screen.print("Press B to craft Juice");
+                if(handSelect == 6 && flower >= 5) screen.print("Press B to craft Tea");
+                if(handSelect == 7 && beans >= 5) screen.print("Press B to craft Coffea");
                 
-                if(flower == 0 && right == 6) right = -1;
-                if(flower == 0 && left == 6) left = -1;
-                if(flower == 0) notHas.draw(screen, 8+24*6, 38);
                 
-                if(beans == 0 && right == 7) right = -1;
-                if(beans == 0 && left == 7) left = -1;
-                if(beans == 0) notHas.draw(screen, 8+24*7, 38);
-
+                screen.setTextPosition(0, 90);
+                screen.print("Juice: " + juice);
+                screen.setTextPosition(0, 100);
+                screen.print("Tea: " + tea);
+                screen.setTextPosition(0, 110);
+                screen.print("Coffee: "+coffee);
+                
+                screen.setTextPosition(0, 120);
+                screen.print("Fruit: " + fruit);
+                screen.setTextPosition(0, 130);
+                screen.print("Flower: " + flower);
+                screen.setTextPosition(0, 140);
+                screen.print("Beans: "+beans);
+                
+                screen.setTextPosition(0, 150);
+                screen.print(handSelect);
                 //draw
                 drawInventory(8, left);
                 drawInventory(56, right);
@@ -492,6 +532,29 @@ class Main extends State {
                 by = (int)hero.y + 5;
                 
                 break;
+            case 5://drink juice
+                if(juice > 0){
+                    juice--;
+                    if(survivalMeter + 2 <= 100)survivalMeter+=2;
+                    
+                    if(lives < maxLives)lives++;
+                }
+                break;
+            case 6://drink tea
+                if(tea > 0){
+                    tea--;
+                    if(survivalMeter + 5 <= 100) survivalMeter += 5;
+                    if(lives < maxLives)lives++;
+                }
+                break;
+            case 7://dirnk coffee
+                if(coffee > 0){
+                    coffee--;
+                    if(survivalMeter + 10 <= 100) survivalMeter += 10;
+                    if(lives < maxLives)lives+=2;
+                }
+                break;
+                
             default:
                 //do nothing on no item
                 break;
