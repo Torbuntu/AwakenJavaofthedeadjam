@@ -223,3 +223,22 @@ Added:
 Updated:
 * Items are now craftable
 * Can consume crafted items
+
+## Day14
+
+| Showcase |
+|----|
+| ![](Showcase/day14.gif?raw=true) |
+
+Added:
+* Loot drops! Now when killing zombies, loot bags will be dropped. Collect these to gain bonus coins, sapplings or extra hearts!
+* New icons for Tea, Juice and Coffee. 
+
+Updated:
+* Inventory screen now has crafting icons instead of ugly big letters.
+* Wife helped make a MUCH better flower icon that matches more the coffee plant's flower. 8x8 flowers with 5 pedals is tough!
+
+TODO:
+* Potentially make the loot bags drop randomly by chance ratio?
+* Update All the art,
+
