@@ -27,6 +27,11 @@ import ZombieImpl;
 import CoffeaImpl;
 import item.Coin;
 
+import item.Juice;
+import item.Coffee;
+import item.Tea;
+
+import item.Loot;
 
 
 class Main extends State {
@@ -56,6 +61,10 @@ class Main extends State {
     
     Coin coin;
     
+    Juice juiceIcon;
+    Coffee coffeeIcon;
+    Tea teaIcon;
+    
     //Item drops
     int flower, fruit, beans; //0,1,2
     int juice, tea, coffee;
@@ -79,7 +88,8 @@ class Main extends State {
     //tmp bullet stuff
     int bx, by;
     boolean shooting;
-
+    
+    Loot[] tileLoot;//0 = empty, 1 = 5 coins, 2 = seed
 
     // start the game using Main as the initial state
     public static void main(String[] args) {
@@ -101,6 +111,10 @@ class Main extends State {
         sword = new Sword();
         gun = new Gun();
         coin = new Coin();
+        
+        juiceIcon = new Juice();
+        coffeeIcon = new Coffee();
+        teaIcon = new Tea();
         
         fruitIcon = new Fruit();
         flowerIcon = new Flower();
@@ -154,6 +168,8 @@ class Main extends State {
         
         //tmp bullet
         shooting = false;
+        
+        tileLoot = new Loot[45];
     }
 
     // Might help in certain situations
@@ -199,7 +215,7 @@ class Main extends State {
                     screen.fillCircle(bx, by, 2, 1);
                 }
                 //move zombies and add coins for kills
-                coins = zombies.moveZombies(coins, plants);
+                coins = zombies.moveZombies(coins, plants, tileLoot);
                 
                 if (zombies.zombieHitPlayer(hero.x, hero.y) && cooldown == 0) {
                     lives--;
@@ -209,14 +225,16 @@ class Main extends State {
                     }
                     cooldown = 100;
                 }
+                
                 moveHero();
-
+                
                 drawPlants();
+                
                 hero.draw(screen);
+                
                 drawZombies();
                 drawLives();
-                
-
+                drawLoot();
 
                 drawQuantities();
                 
@@ -397,22 +415,30 @@ class Main extends State {
                 if(handSelect == 7 && beans >= 5) screen.print("Press B to craft Coffea");
                 
                 
-                screen.setTextPosition(0, 90);
+                screen.setTextPosition(10, 92);
                 screen.print("Juice: " + juice);
-                screen.setTextPosition(0, 100);
+                juiceIcon.draw(screen, 0, 90);
+                
+                screen.setTextPosition(10, 102);
                 screen.print("Tea: " + tea);
-                screen.setTextPosition(0, 110);
+                teaIcon.draw(screen, 0, 100);
+                
+                screen.setTextPosition(10, 112);
                 screen.print("Coffee: "+coffee);
+                coffeeIcon.draw(screen, 0, 110);
                 
-                screen.setTextPosition(0, 120);
+                screen.setTextPosition(10, 122);
                 screen.print("Fruit: " + fruit);
-                screen.setTextPosition(0, 130);
-                screen.print("Flower: " + flower);
-                screen.setTextPosition(0, 140);
-                screen.print("Beans: "+beans);
+                fruitIcon.draw(screen, 0, 120);
                 
-                screen.setTextPosition(0, 150);
-                screen.print(handSelect);
+                screen.setTextPosition(10, 132);
+                screen.print("Flower: " + flower);
+                flowerIcon.draw(screen, 0, 130);
+                
+                screen.setTextPosition(10, 142);
+                screen.print("Beans: "+beans);
+                beanIcon.draw(screen, 0, 140);
+                
                 //draw
                 drawInventory(8, left);
                 drawInventory(56, right);
@@ -480,6 +506,33 @@ class Main extends State {
         //Translate to grid
         hero.x = 6 + hx * 24;
         hero.y = 60 + hy * 24;
+        
+        for(int i = 0; i < 45; i++){
+            if(tileLoot[i] == null) continue;
+            if(tileLoot[i].x == hero.x && tileLoot[i].y == hero.y){
+                tileLoot[i] = null;
+                int t = Math.random(0, 6);
+                switch(t){
+                    case 1:
+                        coins += 5;
+                        break;
+                    case 2:
+                        saplling++;
+                        break;
+                    case 5:
+                        if(lives + 1 <= maxLives){
+                            lives++;
+                        }else{
+                            coins += 10;
+                        }
+                        break;
+                    default:
+                        coins++;
+                        break;
+                }
+                System.out.println("Item: " + t);
+            }
+        }
     }
 
     void itemAction(int hand) {
@@ -687,6 +740,13 @@ class Main extends State {
         screen.setTextColor(11);
         screen.setTextPosition(9, 18 + 5 * 26);
         screen.print("x1,000");//gun
+    }
+    
+    void drawLoot(){
+        for(Loot l : tileLoot){
+            if(l == null) continue;
+            l.draw(screen);
+        }
     }
 
 }

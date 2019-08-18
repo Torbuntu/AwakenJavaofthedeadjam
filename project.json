@@ -422,6 +422,36 @@
 		},
 		"/Showcase/day13.gif": {
 			"sdcard": false
+		},
+		"/item/Coffee.png": {
+			"sdcard": false,
+			"implements": ""
+		},
+		"/item/Tea.png": {
+			"sdcard": false,
+			"implements": ""
+		},
+		"/item/Juice.png": {
+			"sdcard": false,
+			"implements": ""
+		},
+		"/item/Loot.aseprite": {
+			"sdcard": false
+		},
+		"/item/Loot.json": {
+			"sdcard": false,
+			"implements": ""
+		},
+		"/item/Loot.png": {
+			"sdcard": false,
+			"implements": ""
+		},
+		"/AwakenJavaofthedeadjam.bin.1.png": {
+			"sdcard": false,
+			"implements": ""
+		},
+		"/Showcase/day14.gif": {
+			"sdcard": false
 		}
 	}
 }

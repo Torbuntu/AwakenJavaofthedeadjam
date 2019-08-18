@@ -2,6 +2,7 @@ import Math;
 import entities.enemies.zombie.Zombie;
 import entities.plant.Coffea;
 import CoffeaImpl;
+import item.Loot;
 
 class ZombieImpl {
     
@@ -35,7 +36,7 @@ class ZombieImpl {
     }
     
     //updates the zombie positions and manages coin drops
-    int moveZombies(int coins, CoffeaImpl plants) {
+    int moveZombies(int coins, CoffeaImpl plants, Loot[] tileLoot) {
         for (int i = 0; i < getSize(); i++) {
             
             for(int j = 0; j < 45; j++){
@@ -65,9 +66,23 @@ class ZombieImpl {
             
             if (getHealth(i) <= 0) {
                 setHealth(i, 10);
+                for(int k = 0; k < 45; k++){
+                    if(tileLoot[k] == null){
+                        System.out.println(getZombie(i).x + " : " + getZombie(i).y);
+                        System.out.println(6 + Math.round(getZombie(i).x / 24)*24);
+                        Loot l = new Loot();
+                        l.x = 6 + Math.round(getZombie(i).x / 24)*24;
+                        if(l.x > 220) l.x = 6 + 8*24;
+                        l.y = getZombie(i).y;
+                        l.idle();
+                        tileLoot[k] = l;
+                        break;
+                    }
+                }
                 getZombie(i).x = 222;
                 getZombie(i).y = 60 + Math.random(0, 5) * 24;
                 coins++;
+                
             }
             if (getCooldown(i) > 0) {
                 setCooldown(i, getCooldown(i) - 1);
