@@ -242,3 +242,10 @@ TODO:
 * Potentially make the loot bags drop randomly by chance ratio?
 * Update All the art,
 
+
+## Day15
+
+Added:
+* Sound! The menu now has a 'selected' sound
+* String constants for performance
+* Itch.io release page
