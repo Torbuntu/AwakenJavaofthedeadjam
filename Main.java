@@ -4,13 +4,17 @@ import femto.State;
 import femto.input.Button;
 import femto.palette.Castpixel16;
 import femto.font.TIC80;
+import femto.sound.Mixer;
+
 import Math;
 import backgrounds.Playfield;
 import backgrounds.Inventory;
 import backgrounds.Shop;
+
 import entities.hero.Hero;
 import entities.enemies.zombie.Zombie;
 import entities.plant.Coffea;
+
 import item.Heart;
 import item.Sprout;
 import item.Shovel;
@@ -23,15 +27,17 @@ import item.Flower;
 import item.Sapling;
 import item.Bean;
 import item.Ammo;
-import ZombieImpl;
-import CoffeaImpl;
 import item.Coin;
-
 import item.Juice;
 import item.Coffee;
 import item.Tea;
-
 import item.Loot;
+
+import audio.Select;
+
+import ZombieImpl;
+import CoffeaImpl;
+import Constants;
 
 
 class Main extends State {
@@ -64,6 +70,8 @@ class Main extends State {
     Juice juiceIcon;
     Coffee coffeeIcon;
     Tea teaIcon;
+    
+    Select selectSound;
     
     //Item drops
     int flower, fruit, beans; //0,1,2
@@ -99,7 +107,6 @@ class Main extends State {
     // Avoid allocation in a State's constructor.
     // Allocate on init instead.
     void init() {
-        System.out.println("::: Start init :::");
         screen = new HiRes16Color(Castpixel16.palette(), TIC80.font());
         playField = new Playfield();
         inventoryScreen = new Inventory();
@@ -125,9 +132,14 @@ class Main extends State {
         notHas = new NotHas();
         ammoIcon = new Ammo();
         
+        selectSound = new Select(0);
+        
+        
         restart();
         
-        System.out.println("::: Finished init :::");
+        
+        // Initialize the Mixer at 8khz
+        Mixer.init(8000);
     }
     
     void restart(){
@@ -183,6 +195,7 @@ class Main extends State {
         switch (state) {
             case 0://title screen
                 if (Button.C.justPressed()) {
+                    selectSound.play();
                     state = 1;
                 }
                 if(Button.Up.justPressed()){
@@ -197,7 +210,7 @@ class Main extends State {
 
                 screen.setTextColor(11);
                 screen.setTextPosition(10, 10);
-                screen.print("Press C to play");
+                screen.print(Constants.PRESS_C_TO_PLAY);
 
                 for (int i = 0; i < 15; i++) {
                     screen.setTextColor(i);
@@ -239,7 +252,7 @@ class Main extends State {
                 drawQuantities();
                 
                 screen.setTextPosition(0, 16);
-                screen.print("Day: "+day);
+                screen.print(Constants.DAY+day);
                 
                 if (Button.C.justPressed()) state = 3;
                 
@@ -260,9 +273,9 @@ class Main extends State {
                             if(coins >= 5){
                                 coins -= 5;
                                 saplling++;
-                                message = "Purchased a seed for 5 coins.";
+                                message = Constants.PURCHASE_SEED_FOR_COINS;
                             }else{
-                                message = "Not enough coins for saplling.";
+                                message = Constants.NOT_ENOUGH_COIN_SAPLING;
                             }
                             break;
                         case 1://ammo
@@ -289,9 +302,9 @@ class Main extends State {
                             }
                             break;
                         case 3://Yoyo
-                            if (!hasYoyo && coins >= 50) {
+                            if (!hasYoyo && coins >= 500) {
                                 hasYoyo = true;
-                                coins -= 50;
+                                coins -= 500;
                                 message = "Purchased Yoyo for 50 coins.";
                             }else{
                                 if(hasYoyo){
@@ -302,9 +315,9 @@ class Main extends State {
                             }
                             break;
                         case 4://Sword
-                            if(!hasSword && coins >= 150) {
+                            if(!hasSword && coins >= 750) {
                                 hasSword = true;
-                                coins -= 150;
+                                coins -= 750;
                                 message = "Purchaces Sword for 150 coins.";
                             }else{
                                 if(hasSword){
@@ -334,6 +347,7 @@ class Main extends State {
                 }
                 
                 if (Button.C.justPressed()) {
+                    selectSound.play();
                     state = 1;
                     waveNum += 2;
                     zombies = new ZombieImpl(waveNum);
@@ -348,11 +362,11 @@ class Main extends State {
 
                 screen.setTextColor(11);
                 screen.setTextPosition(109, 20);
-                screen.print("x"+coins);
+                screen.print(Constants.X+coins);
                 coin.draw(screen, 100, 20);
                 
                 screen.setTextPosition(0, 170);
-                screen.print("Press C to start the next day");
+                screen.print(Constants.C_TO_START_NEXT_DAY);
                 
                 screen.setTextColor(9);
                 screen.setTextPosition(0, 0);
@@ -365,7 +379,10 @@ class Main extends State {
             case 3:// Inventory Screen
                 inventoryScreen.draw(screen, 0.0f, 0.0f);
                 drawLives();
-                if (Button.C.justPressed()) state = 1;
+                if (Button.C.justPressed()){
+                    selectSound.play();
+                    state = 1;  
+                } 
                 if (Button.Left.justPressed() && handSelect > 0) handSelect--;
                 if (Button.Right.justPressed() && handSelect < 7) handSelect++;
 
@@ -410,33 +427,33 @@ class Main extends State {
                 if(!hasGun)notHas.draw(screen, 8+24*4, 38);
                 
                 screen.setTextPosition(0, 160);
-                if(handSelect == 5 && fruit >= 5) screen.print("Press B to craft Juice");
-                if(handSelect == 6 && flower >= 5) screen.print("Press B to craft Tea");
-                if(handSelect == 7 && beans >= 5) screen.print("Press B to craft Coffea");
+                if(handSelect == 5 && fruit >= 5) screen.print(Constants.PRESS_B_TO_CRAFT + "Juice");
+                if(handSelect == 6 && flower >= 5) screen.print(Constants.PRESS_B_TO_CRAFT + "Tea");
+                if(handSelect == 7 && beans >= 5) screen.print(Constants.PRESS_B_TO_CRAFT + "Coffea");
                 
                 
                 screen.setTextPosition(10, 92);
-                screen.print("Juice: " + juice);
+                screen.print(Constants.JUICE + juice);
                 juiceIcon.draw(screen, 0, 90);
                 
                 screen.setTextPosition(10, 102);
-                screen.print("Tea: " + tea);
+                screen.print(Constants.TEA + tea);
                 teaIcon.draw(screen, 0, 100);
                 
                 screen.setTextPosition(10, 112);
-                screen.print("Coffee: "+coffee);
+                screen.print(Constants.COFFEE+coffee);
                 coffeeIcon.draw(screen, 0, 110);
                 
                 screen.setTextPosition(10, 122);
-                screen.print("Fruit: " + fruit);
+                screen.print(Constants.FRUIT+ fruit);
                 fruitIcon.draw(screen, 0, 120);
                 
                 screen.setTextPosition(10, 132);
-                screen.print("Flower: " + flower);
+                screen.print(Constants.FLOWER + flower);
                 flowerIcon.draw(screen, 0, 130);
                 
                 screen.setTextPosition(10, 142);
-                screen.print("Beans: "+beans);
+                screen.print(Constants.BEANS+beans);
                 beanIcon.draw(screen, 0, 140);
                 
                 //draw
@@ -450,7 +467,7 @@ class Main extends State {
             case 4:
                 screen.setTextColor(11);
                 screen.setTextPosition(10, 100);
-                screen.print("Game Over...");
+                screen.print(Constants.GAME_OVER);
                 if(Button.C.justPressed()) {
                     restart();
                     state = 0;
@@ -530,7 +547,7 @@ class Main extends State {
                         coins++;
                         break;
                 }
-                System.out.println("Item: " + t);
+                System.out.println(Constants.ITEM + t);
             }
         }
     }
@@ -685,27 +702,27 @@ class Main extends State {
         screen.setTextColor(11);
 
         screen.setTextPosition(10, 27);
-        screen.print("x" + coins);
+        screen.print(Constants.X + coins);
         coin.draw(screen, 0, 24);
         
         screen.setTextPosition(10, 38);
-        screen.print("x"+ammo);
+        screen.print(Constants.X+ammo);
         ammoIcon.draw(screen, 0, 36);
         
         screen.setTextPosition(121, 10);
-        screen.print("x" + saplling);
+        screen.print(Constants.X + saplling);
         saplingIcon.draw(screen, 112, 8);
         
         screen.setTextPosition(121, 34);
-        screen.print("x" + flower);
+        screen.print(Constants.X + flower);
         flowerIcon.draw(screen, 112, 30);
         
         screen.setTextPosition(169, 10);
-        screen.print("x" + fruit);
+        screen.print(Constants.X + fruit);
         fruitIcon.draw(screen, 160, 8);
         
         screen.setTextPosition(169, 34);
-        screen.print("x" + beans);
+        screen.print(Constants.X + beans);
         beanIcon.draw(screen, 160, 30);
     }
     
@@ -714,32 +731,32 @@ class Main extends State {
         coin.draw(screen, 1, 16);
         screen.setTextColor(11);
         screen.setTextPosition(9, 18);
-        screen.print("x5");//seed
+        screen.print(Constants.X + Constants.FIVE);//seed
         
         coin.draw(screen, 1, 16 + 1 * 26);
         screen.setTextColor(11);
         screen.setTextPosition(9, 18 + 1 * 26);
-        screen.print("x10");//ammo
+        screen.print(Constants.X + Constants.TEN);//ammo
         
         coin.draw(screen, 1, 16 + 2 * 26);
         screen.setTextColor(11);
         screen.setTextPosition(9, 18 + 2 * 26);
-        screen.print("x500");//health
+        screen.print(Constants.X + Constants.FIVE_HUNDRED);//health
         
         coin.draw(screen, 1, 16 + 3 * 26);
         screen.setTextColor(11);
         screen.setTextPosition(9, 18 + 3 * 26);
-        screen.print("x50");//yoyo
+        screen.print(Constants.X + Constants.FIVE_HUNDRED);//yoyo
         
         coin.draw(screen, 1, 16 + 4 * 26);
         screen.setTextColor(11);
         screen.setTextPosition(9, 18 + 4 * 26);
-        screen.print("x150");//sword
+        screen.print(Constants.X + Constants.SEVEN_FIFTY);//sword
         
         coin.draw(screen, 1, 16 + 5 * 26);
         screen.setTextColor(11);
         screen.setTextPosition(9, 18 + 5 * 26);
-        screen.print("x1,000");//gun
+        screen.print(Constants.X + Constants.ONE_THOUSAND);//gun
     }
     
     void drawLoot(){

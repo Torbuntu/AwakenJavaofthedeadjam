@@ -452,6 +452,15 @@
 		},
 		"/Showcase/day14.gif": {
 			"sdcard": false
+		},
+		"/audio": {
+			"sdcard": false
+		},
+		"/audio/Select.wav": {
+			"sdcard": false
+		},
+		"/Constants.java": {
+			"sdcard": false
 		}
 	}
 }
