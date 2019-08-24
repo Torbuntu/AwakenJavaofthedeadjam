@@ -80,7 +80,7 @@ class Main extends State {
     //inventory items:
     int coins, saplling;
 
-    int hx, hy, left, right, cooldown, plantCount, timeToPlant, lives, maxLives, waveNum, purchaceSelect, ammo, day, survivalMeter;
+    int hx, hy, left, right, cooldown, plantCount, timeToPlant, lives, maxLives, waveNum, purchaceSelect, ammo, day;
     int state; //0 = title, 1=game, 2=pre-day, 3=pause/inventory, 4=game-over
 
     //inventory variables
@@ -147,7 +147,6 @@ class Main extends State {
         hy = 1;
         time = 0.0f;
         day = 1;
-        survivalMeter = 100;
         
         left = 0; //planter
         right = 1; //shovel
@@ -259,7 +258,6 @@ class Main extends State {
                 //Day meter
                 updateTime();
                 screen.drawLine(0.0f, 12.0f, time, 12.0f, 14, false);
-                screen.drawLine(0.0f, 14.0f, (float)survivalMeter, 14.0f, 12, false);
 
                 break;
             case 2://Shop screen
@@ -282,22 +280,26 @@ class Main extends State {
                             if(hasGun && coins >= 10){
                                 coins -= 10;
                                 ammo += 5;
-                                message = "Purchased ammo for 10 coins.";
+                                message = Constants.PURCHASED_AMMO;
                             }else{
-                                message = "Not enough coins for ammo.";
+                                message = Constants.NOT_ENOUGH_COIN_AMMO;
                             }
                             break;
                         case 2://health
-                            if(coins >= 500 && maxLives < 9){
+                            if(coins >= 500 ){
                                 coins -= 500;
-                                maxLives++;
-                                lives++;
-                                message = "Purchased extra life for 500 coins.";
+                                if(maxLives < 9){
+                                    maxLives++;
+                                }
+                                if(lives < maxLives){
+                                    lives++;
+                                }
+                                message = Constants.PURCHASED_EXTRA_LIFE;
                             }else{
                                 if(maxLives == 9){
-                                    message = "Max lives already reached.";
+                                    message = Constants.MAX_LIVES_REACHED;
                                 }else{
-                                    message = "Not enough coins for lives.";
+                                    message = Constants.NOT_ENOUGH_COIN_LIVES;
                                 }
                             }
                             break;
@@ -305,12 +307,11 @@ class Main extends State {
                             if (!hasYoyo && coins >= 500) {
                                 hasYoyo = true;
                                 coins -= 500;
-                                message = "Purchased Yoyo for 50 coins.";
+                                message = Constants.PURCHASED_YOYO;
                             }else{
                                 if(hasYoyo){
-                                    message = "You already own the Yoyo.";    
                                 } else{
-                                    message = "Not enough coins for yoyo.";
+                                    message = Constants.NOT_ENOUGH_COIN_YOYO;
                                 }
                             }
                             break;
@@ -318,12 +319,12 @@ class Main extends State {
                             if(!hasSword && coins >= 750) {
                                 hasSword = true;
                                 coins -= 750;
-                                message = "Purchaces Sword for 150 coins.";
+                                message = Constants.PURCHASED_SWORD;
                             }else{
                                 if(hasSword){
-                                    message = "You already own the Sword.";    
+                                    message = Constants.ALREADY_OWN_SWORD;
                                 } else{
-                                    message = "Not enough coins for Sword.";
+                                    message = Constants.NOT_ENOUGH_COIN_SWORD;
                                 }
                             }
                             break;
@@ -331,12 +332,12 @@ class Main extends State {
                             if(!hasGun && coins >= 1000 ){
                                 hasGun = true;
                                 coins -= 1000;
-                                message = "Purchased Gun for 1000 coins.";
+                                message = Constants.PURCHASED_GUN;
                             }else{
                                 if(hasGun){
-                                    message = "You already own the Gun.";    
+                                    message = Constants.ALREADY_OWN_GUN;
                                 } else{
-                                    message = "Not enough coins for Gun.";
+                                    message = Constants.NOT_ENOUGH_COIN_GUN;
                                 }
                             }
                             
@@ -367,6 +368,30 @@ class Main extends State {
                 
                 screen.setTextPosition(0, 170);
                 screen.print(Constants.C_TO_START_NEXT_DAY);
+                
+                screen.setTextPosition(110, 92);
+                screen.print(Constants.JUICE + juice);
+                juiceIcon.draw(screen, 100, 90);
+                
+                screen.setTextPosition(110, 102);
+                screen.print(Constants.TEA + tea);
+                teaIcon.draw(screen, 100, 100);
+                
+                screen.setTextPosition(110, 112);
+                screen.print(Constants.COFFEE+coffee);
+                coffeeIcon.draw(screen, 100, 110);
+                
+                screen.setTextPosition(110, 128);
+                screen.print(Constants.FRUIT+ fruit);
+                fruitIcon.draw(screen, 100, 126);
+                
+                screen.setTextPosition(110, 138);
+                screen.print(Constants.FLOWER + flower);
+                flowerIcon.draw(screen, 100, 136);
+                
+                screen.setTextPosition(110, 148);
+                screen.print(Constants.BEANS+beans);
+                beanIcon.draw(screen, 100, 146);
                 
                 screen.setTextColor(9);
                 screen.setTextPosition(0, 0);
@@ -412,7 +437,7 @@ class Main extends State {
                         if(right != handSelect && handSelect < 5) left = handSelect;
                     }
                 }
-                if (Button.A.justPressed() && left != handSelect) right = handSelect;
+                if (Button.A.justPressed() && left != handSelect && handSelect < 5) right = handSelect;
                 
                 if(!hasYoyo && right == 2) right = -1;
                 if(!hasYoyo && left == 2) left = -1;
@@ -427,9 +452,9 @@ class Main extends State {
                 if(!hasGun)notHas.draw(screen, 8+24*4, 38);
                 
                 screen.setTextPosition(0, 160);
-                if(handSelect == 5 && fruit >= 5) screen.print(Constants.PRESS_B_TO_CRAFT + "Juice");
-                if(handSelect == 6 && flower >= 5) screen.print(Constants.PRESS_B_TO_CRAFT + "Tea");
-                if(handSelect == 7 && beans >= 5) screen.print(Constants.PRESS_B_TO_CRAFT + "Coffea");
+                if(handSelect == 5 && fruit >= 5) screen.print(Constants.PRESS_B_TO_CRAFT + Constants.J);
+                if(handSelect == 6 && flower >= 5) screen.print(Constants.PRESS_B_TO_CRAFT + Constants.T);
+                if(handSelect == 7 && beans >= 5) screen.print(Constants.PRESS_B_TO_CRAFT + Constants.C);
                 
                 
                 screen.setTextPosition(10, 92);
@@ -444,17 +469,17 @@ class Main extends State {
                 screen.print(Constants.COFFEE+coffee);
                 coffeeIcon.draw(screen, 0, 110);
                 
-                screen.setTextPosition(10, 122);
+                screen.setTextPosition(10, 128);
                 screen.print(Constants.FRUIT+ fruit);
-                fruitIcon.draw(screen, 0, 120);
+                fruitIcon.draw(screen, 0, 126);
                 
-                screen.setTextPosition(10, 132);
+                screen.setTextPosition(10, 138);
                 screen.print(Constants.FLOWER + flower);
-                flowerIcon.draw(screen, 0, 130);
+                flowerIcon.draw(screen, 0, 136);
                 
-                screen.setTextPosition(10, 142);
+                screen.setTextPosition(10, 148);
                 screen.print(Constants.BEANS+beans);
-                beanIcon.draw(screen, 0, 140);
+                beanIcon.draw(screen, 0, 146);
                 
                 //draw
                 drawInventory(8, left);
@@ -488,7 +513,6 @@ class Main extends State {
             state = 2;
             purchaceSelect = -2;//no select
             day++;
-            survivalMeter--;
         }
     }
 
@@ -547,7 +571,6 @@ class Main extends State {
                         coins++;
                         break;
                 }
-                System.out.println(Constants.ITEM + t);
             }
         }
     }
@@ -595,36 +618,13 @@ class Main extends State {
                 break;
             case 4://gun
                 if(!hasGun || ammo == 0 || shooting)break;
-                hero.walk();
+                hero.shoot();
                 shooting = true;
                 ammo--;
                 bx = (int)hero.x + 6;
                 by = (int)hero.y + 5;
                 
                 break;
-            case 5://drink juice
-                if(juice > 0){
-                    juice--;
-                    if(survivalMeter + 2 <= 100)survivalMeter+=2;
-                    
-                    if(lives < maxLives)lives++;
-                }
-                break;
-            case 6://drink tea
-                if(tea > 0){
-                    tea--;
-                    if(survivalMeter + 5 <= 100) survivalMeter += 5;
-                    if(lives < maxLives)lives++;
-                }
-                break;
-            case 7://dirnk coffee
-                if(coffee > 0){
-                    coffee--;
-                    if(survivalMeter + 10 <= 100) survivalMeter += 10;
-                    if(lives < maxLives)lives+=2;
-                }
-                break;
-                
             default:
                 //do nothing on no item
                 break;

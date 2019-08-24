@@ -68,8 +68,6 @@ class ZombieImpl {
                 setHealth(i, 10);
                 for(int k = 0; k < 45; k++){
                     if(tileLoot[k] == null){
-                        System.out.println(getZombie(i).x + " : " + getZombie(i).y);
-                        System.out.println(6 + Math.round(getZombie(i).x / 24)*24);
                         Loot l = new Loot();
                         l.x = 6 + Math.round(getZombie(i).x / 24)*24;
                         if(l.x > 220) l.x = 6 + 8*24;

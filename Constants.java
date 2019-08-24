@@ -25,5 +25,29 @@ public class Constants {
     public static final String FRUIT = "Fruit: ";
     public static final String FLOWER = "Flower: ";
     public static final String BEANS = "Beans: ";
+    
+    public static final String J = "Juice";
+    public static final String T = "Tea";
+    public static final String C = "Coffee";
+    
+    
+    public static final String PURCHASED_AMMO = "Purchased ammo for 10 coins.";
+    public static final String NOT_ENOUGH_COIN_AMMO =  "Not enough coins for ammo.";
+    
+    public static final String PURCHASED_EXTRA_LIFE = "Purchased extra life for 500 coins.";
+    public static final String MAX_LIVES_REACHED = "Max lives already reached.";
+    public static final String NOT_ENOUGH_COIN_LIVES =  "Not enough coins for lives.";
+    
+    public static final String PURCHASED_YOYO = "Purchased Yoyo for 500 coins.";
+    public static final String NOT_ENOUGH_COIN_YOYO = "Not enough coins for Yoyo";
+    public static final String ALREADY_OWN_YOYO = "You already own the Yoyo.";
 
+
+    public static final String PURCHASED_SWORD = "Purchaces Sword for 150 coins.";
+    public static final String ALREADY_OWN_SWORD = "You already own the Sword.";    
+    public static final String NOT_ENOUGH_COIN_SWORD = "Not enough coins for Sword.";
+    
+    public static final String PURCHASED_GUN = "Purchased Gun for 1000 coins.";
+    public static final String ALREADY_OWN_GUN = "You already own the Gun.";    
+    public static final String NOT_ENOUGH_COIN_GUN = "Not enough coins for Gun.";
 }
