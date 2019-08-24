@@ -249,3 +249,16 @@ Added:
 * Sound! The menu now has a 'selected' sound
 * String constants for performance
 * Itch.io release page
+
+## Day16
+
+Added:
+* Shooting sprite
+
+Updated:
+* Shrank the hero sprite so uses less memory. 
+* More constants
+* Updated the backgrounds to contain more info
+* Removed Survival Meter 
+* Removed edibles. Now collect them for scores.
+
