@@ -44,7 +44,7 @@ class ZombieImpl {
                 if(plants.getPlant(j) == null) continue;
                 
                 //if zombie is on plant tile
-                if(getZombie(i).x < plants.getPlant(j).x + 12 
+                if(getZombie(i).x < plants.getPlant(j).x + 16 
                 && getZombie(i).x > plants.getPlant(j).x + 8
                 && getZombie(i).y == plants.getPlant(j).y){
                     if(plants.getState(j) == 5) {
@@ -109,6 +109,7 @@ class ZombieImpl {
                     getZombie(i).x += back;
                     setCooldown(i, cooldown);
                     setHealth(i, getHealth(i) - damage);
+                    eating[i] = 0;
                 }
             }
         }

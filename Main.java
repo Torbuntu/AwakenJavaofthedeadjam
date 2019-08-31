@@ -23,14 +23,9 @@ import item.Sword;
 import item.Gun;
 import item.NotHas;
 import item.Fruit;
-import item.Flower;
 import item.Sapling;
-import item.Bean;
 import item.Ammo;
 import item.Coin;
-import item.Juice;
-import item.Coffee;
-import item.Tea;
 import item.Loot;
 
 import audio.Select;
@@ -60,22 +55,16 @@ class Main extends State {
     Gun gun;
     
     Fruit fruitIcon;
-    Flower flowerIcon;
     Sapling saplingIcon;
-    Bean beanIcon;
+   
     Ammo ammoIcon;
     
     Coin coin;
     
-    Juice juiceIcon;
-    Coffee coffeeIcon;
-    Tea teaIcon;
-    
     Select selectSound;
     
     //Item drops
-    int flower, fruit, beans; //0,1,2
-    int juice, tea, coffee;
+    int fruit; //0,1,2
 
     //inventory items:
     int coins, saplling;
@@ -119,14 +108,8 @@ class Main extends State {
         gun = new Gun();
         coin = new Coin();
         
-        juiceIcon = new Juice();
-        coffeeIcon = new Coffee();
-        teaIcon = new Tea();
-        
         fruitIcon = new Fruit();
-        flowerIcon = new Flower();
         saplingIcon = new Sapling();
-        beanIcon = new Bean();
         
         heart = new Heart();
         notHas = new NotHas();
@@ -167,13 +150,7 @@ class Main extends State {
         hasSword = false;
         purchaceSelect = 0;
         ammo = 0;
-        flower = 0;
         fruit = 0;
-        beans = 0;
-        
-        juice = 0;
-        tea = 0;
-        coffee = 0;
         
         message = "";
         
@@ -286,8 +263,8 @@ class Main extends State {
                             }
                             break;
                         case 2://health
-                            if(coins >= 500 ){
-                                coins -= 500;
+                            if(coins >= 50 ){
+                                coins -= 50;
                                 if(maxLives < 9){
                                     maxLives++;
                                 }
@@ -304,9 +281,9 @@ class Main extends State {
                             }
                             break;
                         case 3://Yoyo
-                            if (!hasYoyo && coins >= 500) {
+                            if (!hasYoyo && coins >= 50) {
                                 hasYoyo = true;
-                                coins -= 500;
+                                coins -= 50;
                                 message = Constants.PURCHASED_YOYO;
                             }else{
                                 if(hasYoyo){
@@ -316,9 +293,9 @@ class Main extends State {
                             }
                             break;
                         case 4://Sword
-                            if(!hasSword && coins >= 750) {
+                            if(!hasSword && coins >= 150) {
                                 hasSword = true;
-                                coins -= 750;
+                                coins -= 150;
                                 message = Constants.PURCHASED_SWORD;
                             }else{
                                 if(hasSword){
@@ -329,9 +306,9 @@ class Main extends State {
                             }
                             break;
                         case 5://Gun
-                            if(!hasGun && coins >= 1000 ){
+                            if(!hasGun && coins >= 250 ){
                                 hasGun = true;
-                                coins -= 1000;
+                                coins -= 250;
                                 message = Constants.PURCHASED_GUN;
                             }else{
                                 if(hasGun){
@@ -369,29 +346,9 @@ class Main extends State {
                 screen.setTextPosition(0, 170);
                 screen.print(Constants.C_TO_START_NEXT_DAY);
                 
-                screen.setTextPosition(110, 92);
-                screen.print(Constants.JUICE + juice);
-                juiceIcon.draw(screen, 100, 90);
-                
-                screen.setTextPosition(110, 102);
-                screen.print(Constants.TEA + tea);
-                teaIcon.draw(screen, 100, 100);
-                
-                screen.setTextPosition(110, 112);
-                screen.print(Constants.COFFEE+coffee);
-                coffeeIcon.draw(screen, 100, 110);
-                
                 screen.setTextPosition(110, 128);
                 screen.print(Constants.FRUIT+ fruit);
                 fruitIcon.draw(screen, 100, 126);
-                
-                screen.setTextPosition(110, 138);
-                screen.print(Constants.FLOWER + flower);
-                flowerIcon.draw(screen, 100, 136);
-                
-                screen.setTextPosition(110, 148);
-                screen.print(Constants.BEANS+beans);
-                beanIcon.draw(screen, 100, 146);
                 
                 screen.setTextColor(9);
                 screen.setTextPosition(0, 0);
@@ -409,30 +366,13 @@ class Main extends State {
                     state = 1;  
                 } 
                 if (Button.Left.justPressed() && handSelect > 0) handSelect--;
-                if (Button.Right.justPressed() && handSelect < 7) handSelect++;
+                if (Button.Right.justPressed() && handSelect < 5) handSelect++;
 
                 if(Button.B.justPressed()){
-                    if(handSelect > 4){
-                        switch(handSelect){
-                            case 5:
-                                if(fruit >= 5){
-                                    fruit-=5;
-                                    juice++;
-                                }
-                                break;
-                            case 6:
-                                if(flower >= 5){
-                                    flower-=5;
-                                    tea++;
-                                }
-                                break;
-                            case 7:
-                                if(beans >= 5){
-                                    beans-=5;
-                                    coffee++;
-                                }
-                                break;
-                        }  
+                    if(handSelect == 5){
+                        if(fruit >= 25){
+                            state = 5;
+                        }
                     }else{
                         if(right != handSelect && handSelect < 5) left = handSelect;
                     }
@@ -452,34 +392,25 @@ class Main extends State {
                 if(!hasGun)notHas.draw(screen, 8+24*4, 38);
                 
                 screen.setTextPosition(0, 160);
-                if(handSelect == 5 && fruit >= 5) screen.print(Constants.PRESS_B_TO_CRAFT + Constants.J);
-                if(handSelect == 6 && flower >= 5) screen.print(Constants.PRESS_B_TO_CRAFT + Constants.T);
-                if(handSelect == 7 && beans >= 5) screen.print(Constants.PRESS_B_TO_CRAFT + Constants.C);
+                if(handSelect == 5 ) {
+                   if(fruit >= 25){
+                       screen.print(Constants.PRESS_B_TO_CRAFT);  
+                   } else {
+                       screen.print(Constants.FRUIT_TO_WIN + (25-fruit));  
+                   }
+                }
                 
-                
-                screen.setTextPosition(10, 92);
-                screen.print(Constants.JUICE + juice);
-                juiceIcon.draw(screen, 0, 90);
-                
-                screen.setTextPosition(10, 102);
-                screen.print(Constants.TEA + tea);
-                teaIcon.draw(screen, 0, 100);
-                
-                screen.setTextPosition(10, 112);
-                screen.print(Constants.COFFEE+coffee);
-                coffeeIcon.draw(screen, 0, 110);
+                //draw fruit meter
+                screen.drawCircle(100, 110, 25, 5, false);
+                if(fruit >= 25) {
+                    screen.fillCircle(100, 110, 25, 7, false);   
+                }else{
+                    screen.fillCircle(100, 110, fruit, 1, false);
+                }
                 
                 screen.setTextPosition(10, 128);
                 screen.print(Constants.FRUIT+ fruit);
                 fruitIcon.draw(screen, 0, 126);
-                
-                screen.setTextPosition(10, 138);
-                screen.print(Constants.FLOWER + flower);
-                flowerIcon.draw(screen, 0, 136);
-                
-                screen.setTextPosition(10, 148);
-                screen.print(Constants.BEANS+beans);
-                beanIcon.draw(screen, 0, 146);
                 
                 //draw
                 drawInventory(8, left);
@@ -496,7 +427,15 @@ class Main extends State {
                 if(Button.C.justPressed()) {
                     restart();
                     state = 0;
-                    
+                }
+                break;
+            case 5://WIN
+                screen.setTextColor(11);
+                screen.setTextPosition(10, 100);
+                screen.print("YOU WIN! The World is saved!");
+                if(Button.C.justPressed()) {
+                    restart();
+                    state = 0;
                 }
                 break;
         }
@@ -584,19 +523,7 @@ class Main extends State {
                     plants.plantSeed(hx, hy);
                     saplling--;
                 }else if(plants.tileContainsPlant(hx, hy) ){
-                    switch(plants.tileContainsItem(hx, hy)){
-                        case 0:
-                            flower++;
-                            break;
-                        case 1:
-                            fruit++;
-                            break;
-                        case 2:
-                            beans++;
-                            break;
-                        default:
-                            break;
-                    }
+                    fruit += plants.tileContainsItem(hx, hy);
                 } else if (saplling > 0) {
                     timeToPlant++;
                 }
@@ -713,17 +640,9 @@ class Main extends State {
         screen.print(Constants.X + saplling);
         saplingIcon.draw(screen, 112, 8);
         
-        screen.setTextPosition(121, 34);
-        screen.print(Constants.X + flower);
-        flowerIcon.draw(screen, 112, 30);
-        
         screen.setTextPosition(169, 10);
         screen.print(Constants.X + fruit);
         fruitIcon.draw(screen, 160, 8);
-        
-        screen.setTextPosition(169, 34);
-        screen.print(Constants.X + beans);
-        beanIcon.draw(screen, 160, 30);
     }
     
     //Draws the prices of items in the shop screen
@@ -741,22 +660,22 @@ class Main extends State {
         coin.draw(screen, 1, 16 + 2 * 26);
         screen.setTextColor(11);
         screen.setTextPosition(9, 18 + 2 * 26);
-        screen.print(Constants.X + Constants.FIVE_HUNDRED);//health
+        screen.print(Constants.X + Constants.FIFTY);//health
         
         coin.draw(screen, 1, 16 + 3 * 26);
         screen.setTextColor(11);
         screen.setTextPosition(9, 18 + 3 * 26);
-        screen.print(Constants.X + Constants.FIVE_HUNDRED);//yoyo
+        screen.print(Constants.X + Constants.FIFTY);//yoyo
         
         coin.draw(screen, 1, 16 + 4 * 26);
         screen.setTextColor(11);
         screen.setTextPosition(9, 18 + 4 * 26);
-        screen.print(Constants.X + Constants.SEVEN_FIFTY);//sword
+        screen.print(Constants.X + Constants.ONE_HUNDRED_FIFTY);//sword
         
         coin.draw(screen, 1, 16 + 5 * 26);
         screen.setTextColor(11);
         screen.setTextPosition(9, 18 + 5 * 26);
-        screen.print(Constants.X + Constants.ONE_THOUSAND);//gun
+        screen.print(Constants.X + Constants.TWO_HUNDRED_FIFTY);//gun
     }
     
     void drawLoot(){

@@ -48,7 +48,7 @@ class CoffeaImpl{
                     plants[i] = null;
                     plantStates[i] = 0;
                     
-                    return Math.random(0, 3);
+                    return 1;
                 }
                 //Dead, clean it up.
                 if(getState(i) == 5){
@@ -58,7 +58,7 @@ class CoffeaImpl{
                 }
             }
         }
-        return 6//no item
+        return 0;//no item
     }
     
     void updatePlants(){
