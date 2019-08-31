@@ -262,3 +262,15 @@ Updated:
 * Removed Survival Meter 
 * Removed edibles. Now collect them for scores.
 
+## Day17
+
+Added:
+* Win condition! Harvest 25 fruits to craft the cure for the zombie coffee strain.
+* Harvested fruit circle meter.
+
+Updated:
+* Zombies can now be killed while they eat. (No longer hurting the player in the same tile)
+* Items are now cheaper. 
+
+Removed:
+* Consumables/edibles gone completely
