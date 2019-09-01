@@ -1,7 +1,7 @@
 public class Constants {
     public static final String X = "x";
     public static final String C_TO_START_NEXT_DAY = "Press C to start the next day";
-    public static final String PRESS_C_TO_PLAY = "Press C to play";
+    public static final String PRESS_C_TO_PLAY = "Press C To Start";
     public static final String DAY = "Day: ";
     public static final String PURCHASE_SEED_FOR_COINS = "Purchased a seed for 5 coins.";
     public static final String NOT_ENOUGH_COIN_SAPLING = "Not enough coins for saplling.";
@@ -19,7 +19,7 @@ public class Constants {
 
     public static final String ITEM = "Item: ";
     
-    public static final String FRUIT = "Fruit: ";
+    public static final String FRUIT = "Coffee Fruits: ";
     
     
     public static final String PURCHASED_AMMO = "Purchased ammo for 10 coins.";
@@ -41,6 +41,13 @@ public class Constants {
     public static final String PURCHASED_GUN = "Purchased Gun for 250 coins.";
     public static final String ALREADY_OWN_GUN = "You already own the Gun.";    
     public static final String NOT_ENOUGH_COIN_GUN = "Not enough coins for Gun.";
+    
+    public static final String DO_NOT_OWN = "You do not yet own the ";
+    public static final String SWORD = "Sword.";
+    public static final String GUN = "Gun.";
+    public static final String YOYO = "Yoyo.";
+    
+    
     
     public static final String FRUIT_TO_WIN = "Breed more coffee for cure: ";
 }

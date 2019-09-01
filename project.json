@@ -461,6 +461,48 @@
 		},
 		"/Constants.java": {
 			"sdcard": false
+		},
+		"/backgrounds/Title.png": {
+			"sdcard": false,
+			"implements": ""
+		},
+		"/AwakenJavaofthedeadjam.bin.1.gif": {
+			"sdcard": false
+		},
+		"/AwakenJavaofthedeadjam.bin.2.gif": {
+			"sdcard": false
+		},
+		"/AwakenJavaofthedeadjam.bin.3.gif": {
+			"sdcard": false
+		},
+		"/AwakenJavaofthedeadjam.bin.4.gif": {
+			"sdcard": false
+		},
+		"/AwakenJavaofthedeadjam.bin.5.gif": {
+			"sdcard": false
+		},
+		"/entities/enemies/death.aseprite": {
+			"sdcard": false
+		},
+		"/entities/enemies/death.ase": {
+			"sdcard": false
+		},
+		"/entities/enemies/Death.ase": {
+			"sdcard": false
+		},
+		"/entities/enemies/Death.json": {
+			"sdcard": false,
+			"implements": ""
+		},
+		"/entities/enemies/Death.png": {
+			"sdcard": false,
+			"implements": ""
+		},
+		"/Death.java": {
+			"sdcard": false
+		},
+		"/DeathManager.java": {
+			"sdcard": false
 		}
 	}
 }

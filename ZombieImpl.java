@@ -1,5 +1,6 @@
 import Math;
 import entities.enemies.zombie.Zombie;
+import entities.enemies.Death;
 import entities.plant.Coffea;
 import CoffeaImpl;
 import item.Loot;
@@ -7,6 +8,8 @@ import item.Loot;
 class ZombieImpl {
     
     Zombie[] wave;
+    Death[] corpses;
+    int[] deadTime;
     int[] eCool;
     int[] health;
     int[] eating;
@@ -18,13 +21,17 @@ class ZombieImpl {
     }
     
     void makeWave(int amount){
+        corpses = new Death[amount];
+        deadTime = new int[amount];
         wave = new Zombie[amount];
+        
         eCool = new int[amount];
         health = new int[amount];
         eating = new int[amount];
         speeds = new float[amount];
-        
+        if(amount > 60) amount = 60;//cap at 60
         for(int i = 0; i < amount; i++){
+            deadTime[i] = 0;
             wave[i] = new Zombie();
             wave[i].x = 220;
             wave[i].y = 60+Math.random(0,5)*24;
@@ -38,7 +45,13 @@ class ZombieImpl {
     //updates the zombie positions and manages coin drops
     int moveZombies(int coins, CoffeaImpl plants, Loot[] tileLoot) {
         for (int i = 0; i < getSize(); i++) {
-            
+            if(deadTime[i] > 0){
+                deadTime[i]--;
+                if(deadTime[i] <= 0){
+                    corpses[i] = null;
+                }
+                continue;
+            }
             for(int j = 0; j < 45; j++){
                 //if the plant is null or already dead continue to next plant
                 if(plants.getPlant(j) == null) continue;
@@ -65,6 +78,12 @@ class ZombieImpl {
             
             
             if (getHealth(i) <= 0) {
+                corpses[i] = new Death();
+                corpses[i].x = getZombie(i).x;
+                corpses[i].y = getZombie(i).y;
+                corpses[i].explode();
+                deadTime[i] = 100;
+                
                 setHealth(i, 10);
                 for(int k = 0; k < 45; k++){
                     if(tileLoot[k] == null){
@@ -80,7 +99,6 @@ class ZombieImpl {
                 getZombie(i).x = 222;
                 getZombie(i).y = 60 + Math.random(0, 5) * 24;
                 coins++;
-                
             }
             if (getCooldown(i) > 0) {
                 setCooldown(i, getCooldown(i) - 1);
@@ -144,6 +162,9 @@ class ZombieImpl {
     
     public Zombie[] getAllZombies(){
         return wave;
+    }
+    public Death[] getAllDeath(){
+        return corpses;
     }
     
     public Zombie getZombie(int index){

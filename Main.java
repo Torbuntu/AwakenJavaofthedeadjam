@@ -10,9 +10,11 @@ import Math;
 import backgrounds.Playfield;
 import backgrounds.Inventory;
 import backgrounds.Shop;
+import backgrounds.Title;
 
 import entities.hero.Hero;
 import entities.enemies.zombie.Zombie;
+import entities.enemies.Death;
 import entities.plant.Coffea;
 
 import item.Heart;
@@ -42,6 +44,8 @@ class Main extends State {
     Playfield playField;
     Inventory inventoryScreen;
     Shop shop;
+    Title titleScreen;
+    
     Hero hero;
 
     Heart heart;
@@ -99,8 +103,11 @@ class Main extends State {
         screen = new HiRes16Color(Castpixel16.palette(), TIC80.font());
         playField = new Playfield();
         inventoryScreen = new Inventory();
+        titleScreen = new Title();
+        
         shop = new Shop();
         hero = new Hero();
+        hero.idle();
         shovel = new Shovel();
         sprout = new Sprout();
         yoyo = new Yoyo();
@@ -158,6 +165,7 @@ class Main extends State {
         shooting = false;
         
         tileLoot = new Loot[45];
+        hero.idle();
     }
 
     // Might help in certain situations
@@ -170,29 +178,58 @@ class Main extends State {
         screen.clear(0);
         switch (state) {
             case 0://title screen
+                titleScreen.draw(screen, 0.0f, 0.0f);
                 if (Button.C.justPressed()) {
                     selectSound.play();
                     state = 1;
+                    shooting = false;
                 }
                 if(Button.Up.justPressed()){
                     hasYoyo = true;
                     hasGun = true;
                     hasSword = true;
+                    ammo = 9000;
                     coins = 10000;
+                    fruit = 13;
+                    maxLives = 9;
                 }
-
-                hero.walk();
-                hero.draw(screen, 20.0f, 20.0f);
+                
+                if(Button.B.justPressed() || Button.A.justPressed()){
+                    int r = Math.random(0, 5);
+                    shooting = false;
+                    switch(r){
+                        case 0:
+                            hero.shovel();
+                            break;
+                        case 1:
+                            hero.shoot();
+                            shooting = true;
+                            bx = 100;
+                            break;
+                        case 2:
+                            hero.yoyo();
+                            break;
+                        case 3:
+                            hero.sword();
+                            break;
+                        default:
+                            hero.idle();
+                            break;
+                    }
+                }
+                
+                if(shooting){
+                    bx++;
+                    if(bx > 180) bx = 100;
+                    screen.fillCircle(bx, 150, 2, 1);
+                }
+    
+                hero.draw(screen, 80.0f, 140.0f);
 
                 screen.setTextColor(11);
-                screen.setTextPosition(10, 10);
+                screen.setTextPosition(70, 130);
                 screen.print(Constants.PRESS_C_TO_PLAY);
 
-                for (int i = 0; i < 15; i++) {
-                    screen.setTextColor(i);
-                    screen.setTextPosition(110, i * 8);
-                    screen.print("(" + i + ")");
-                }
                 break;
             case 1: //Game play screen
                 playField.draw(screen, 0.0f, 0.0f);
@@ -239,6 +276,7 @@ class Main extends State {
                 break;
             case 2://Shop screen
                 shop.draw(screen, 0.0f, 0.0f);
+                if(purchaceSelect < 0 && Button.Down.justPressed() || Button.Up.justPressed()) purchaceSelect = 0;
                 if(Button.Down.justPressed() && purchaceSelect < 5) purchaceSelect++;
                 if(Button.Up.justPressed() && purchaceSelect > 0)purchaceSelect--;
                 
@@ -256,7 +294,7 @@ class Main extends State {
                         case 1://ammo
                             if(hasGun && coins >= 10){
                                 coins -= 10;
-                                ammo += 5;
+                                ammo += 15;
                                 message = Constants.PURCHASED_AMMO;
                             }else{
                                 message = Constants.NOT_ENOUGH_COIN_AMMO;
@@ -264,14 +302,18 @@ class Main extends State {
                             break;
                         case 2://health
                             if(coins >= 50 ){
-                                coins -= 50;
+                                
                                 if(maxLives < 9){
                                     maxLives++;
                                 }
                                 if(lives < maxLives){
                                     lives++;
+                                    coins -= 50;
+                                    message = Constants.PURCHASED_EXTRA_LIFE;
+                                }else{
+                                    message = Constants.MAX_LIVES_REACHED;
                                 }
-                                message = Constants.PURCHASED_EXTRA_LIFE;
+                                
                             }else{
                                 if(maxLives == 9){
                                     message = Constants.MAX_LIVES_REACHED;
@@ -368,49 +410,108 @@ class Main extends State {
                 if (Button.Left.justPressed() && handSelect > 0) handSelect--;
                 if (Button.Right.justPressed() && handSelect < 5) handSelect++;
 
-                if(Button.B.justPressed()){
-                    if(handSelect == 5){
-                        if(fruit >= 25){
-                            state = 5;
-                        }
-                    }else{
-                        if(right != handSelect && handSelect < 5) left = handSelect;
+                if(Button.B.justPressed() && right != handSelect){
+                    switch(handSelect){
+                        case 2:
+                            if(hasYoyo){
+                                left = handSelect;
+                            }
+                            break;
+                        case 3:
+                            if(hasSword){
+                                left = handSelect;
+                            }
+                        case 4:
+                            if(hasGun){
+                                left = handSelect;
+                            }
+                        case 5:
+                            if(fruit >= 25){
+                                state = 5;
+                            }
+                            break;
+                        default:
+                            left = handSelect;
+                            break;
                     }
                 }
-                if (Button.A.justPressed() && left != handSelect && handSelect < 5) right = handSelect;
+                if (Button.A.justPressed() && left != handSelect && handSelect < 5) {
+                    switch(handSelect){
+                        case 2:
+                            if(hasYoyo){
+                                right = handSelect;
+                            }
+                            break;
+                        case 3:
+                            if(hasSword){
+                                right = handSelect;
+                            }
+                        case 4:
+                            if(hasGun){
+                                right = handSelect;
+                            }
+                        default:
+                            right = handSelect;
+                            break;
+                    }
+                }
                 
-                if(!hasYoyo && right == 2) right = -1;
-                if(!hasYoyo && left == 2) left = -1;
+                
+                screen.setTextPosition(6, 160);
+                switch(handSelect){
+                    case 0:
+                        screen.print("Equip the Planter.");
+                        break;
+                    case 1:
+                        screen.print("Equip the Shovel.");
+                        break;
+                    case 2:
+                        if(hasYoyo){
+                            screen.print("Equip the Yoyo.");
+                        }else{
+                            screen.print("You do not yet own the Yoyo.");
+                        }
+                        break;
+                    case 3:
+                        if(hasSword){
+                            screen.print("Equip the Sword.");
+                        }else{
+                            screen.print("You do not yet own the Sword.");
+                        }
+                        break;
+                    case 4:
+                        if(hasGun){
+                            screen.print("Equip the Gun.");
+                        }else{
+                            screen.print("You do not yet own the Gun.");
+                        }
+                    default:
+                        break;
+                }
+            
                 if(!hasYoyo)notHas.draw(screen, 8+24*2, 38);
-                
-                if(!hasSword && right == 3) right = -1;
-                if(!hasSword && left == 3) left = -1;
                 if(!hasSword)notHas.draw(screen, 8+24*3, 38);
-                
-                if(!hasGun && right == 4) right = -1;
-                if(!hasGun && left == 4) left = -1;
                 if(!hasGun)notHas.draw(screen, 8+24*4, 38);
                 
-                screen.setTextPosition(0, 160);
                 if(handSelect == 5 ) {
                    if(fruit >= 25){
-                       screen.print(Constants.PRESS_B_TO_CRAFT);  
+                       screen.print(Constants.PRESS_B_TO_CRAFT);
                    } else {
-                       screen.print(Constants.FRUIT_TO_WIN + (25-fruit));  
+                       screen.print(Constants.FRUIT_TO_WIN + (25 - fruit));
                    }
                 }
                 
                 //draw fruit meter
-                screen.drawCircle(100, 110, 25, 5, false);
+                screen.drawCircle(185, 35, 25, 5, false);
                 if(fruit >= 25) {
-                    screen.fillCircle(100, 110, 25, 7, false);   
+                    screen.fillCircle(185, 35, 25, 7, false);   
                 }else{
-                    screen.fillCircle(100, 110, fruit, 1, false);
+                    screen.fillCircle(185, 35, fruit, 1, false);
                 }
                 
-                screen.setTextPosition(10, 128);
+                screen.setTextPosition(16, 81);
                 screen.print(Constants.FRUIT+ fruit);
-                fruitIcon.draw(screen, 0, 126);
+                fruitIcon.draw(screen, 6, 78);
                 
                 //draw
                 drawInventory(8, left);
@@ -548,8 +649,8 @@ class Main extends State {
                 hero.shoot();
                 shooting = true;
                 ammo--;
-                bx = (int)hero.x + 6;
-                by = (int)hero.y + 5;
+                bx = (int)hero.x + 20;
+                by = (int)hero.y + 10;
                 
                 break;
             default:
@@ -560,7 +661,7 @@ class Main extends State {
     
     void updateBullet(){
         for (int i = 0; i < zombies.getSize(); i++) {
-            if (zombies.getZombie(i).x > hero.x && bx + 1 >= zombies.getZombie(i).x && by >= zombies.getZombie(i).y && by <= zombies.getZombie(i).y+8 ) {
+            if (zombies.getZombie(i).x > hero.x && bx + 1 >= zombies.getZombie(i).x && by >= zombies.getZombie(i).y && by <= zombies.getZombie(i).y+14 ) {
                 zombies.setHealth(i, 0);
                 shooting = false;
                 return;
@@ -575,17 +676,16 @@ class Main extends State {
 
     void drawLives() {
         switch (state) {
-            case 1:
-                for(int j = 0; j < maxLives; j++){
-                    screen.drawRect((j * 12), 0, 9, 9, 7);
-                }
+            case 1://play field
+                screen.drawRect(0, 0, maxLives*12, 9, 7, false);
                 for (int i = 0; i < lives; i++) {
-                    heart.draw(screen, (float)(1 + i * 12), 1.0f);
+                    heart.draw(screen, (float)(2 + i * 12), 1.0f);
                 }
                 break;
-            case 3:
+            case 3://inventory screen
+                screen.drawRect(6, 64, maxLives*12, 9, 7, false);
                 for (int i = 0; i < lives; i++) {
-                    heart.draw(screen, (float)(12 + i * 12), 80.0f);
+                    heart.draw(screen, (float)(8 + i * 12), 65.0f);
                 }
                 break;
         }
@@ -601,6 +701,10 @@ class Main extends State {
     void drawZombies() {
         for (Zombie z: zombies.getAllZombies()) {
             z.draw(screen);
+        }
+        for (Death d : zombies.getAllDeath()){
+            if(null == d) continue;
+            d.draw(screen);
         }
     }
 
@@ -640,9 +744,9 @@ class Main extends State {
         screen.print(Constants.X + saplling);
         saplingIcon.draw(screen, 112, 8);
         
-        screen.setTextPosition(169, 10);
+        screen.setTextPosition(121, 20);
         screen.print(Constants.X + fruit);
-        fruitIcon.draw(screen, 160, 8);
+        fruitIcon.draw(screen, 112, 18);
     }
     
     //Draws the prices of items in the shop screen
