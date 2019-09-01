@@ -31,6 +31,9 @@ import item.Coin;
 import item.Loot;
 
 import audio.Select;
+import audio.LootPickup;
+import audio.Hit;
+// import audio.Planted;
 
 import ZombieImpl;
 import CoffeaImpl;
@@ -66,6 +69,9 @@ class Main extends State {
     Coin coin;
     
     Select selectSound;
+    LootPickup lootSound;
+    Hit hitSound;
+    // Planted plantSound;
     
     //Item drops
     int fruit; //0,1,2
@@ -123,7 +129,9 @@ class Main extends State {
         ammoIcon = new Ammo();
         
         selectSound = new Select(0);
-        
+        lootSound = new LootPickup(0);
+        hitSound = new Hit(1);
+        //plantSound = new Planted(1);
         
         restart();
         
@@ -276,7 +284,7 @@ class Main extends State {
                 break;
             case 2://Shop screen
                 shop.draw(screen, 0.0f, 0.0f);
-                if(purchaceSelect < 0 && Button.Down.justPressed() || Button.Up.justPressed()) purchaceSelect = 0;
+                if(purchaceSelect < 0 && (Button.Down.justPressed() || Button.Up.justPressed())) purchaceSelect = 0;
                 if(Button.Down.justPressed() && purchaceSelect < 5) purchaceSelect++;
                 if(Button.Up.justPressed() && purchaceSelect > 0)purchaceSelect--;
                 
@@ -592,6 +600,7 @@ class Main extends State {
             if(tileLoot[i] == null) continue;
             if(tileLoot[i].x == hero.x && tileLoot[i].y == hero.y){
                 tileLoot[i] = null;
+                lootSound.play();
                 int t = Math.random(0, 6);
                 switch(t){
                     case 1:
@@ -620,6 +629,7 @@ class Main extends State {
             case 0: //planter. Player starts with planter so always has planter. Plants and harvests crops.
             
                 if (!plants.tileContainsPlant(hx, hy) && saplling > 0 && timeToPlant > 45) {
+                  //  plantSound.play();
                     timeToPlant = 0;
                     plants.plantSeed(hx, hy);
                     saplling--;
@@ -632,7 +642,9 @@ class Main extends State {
                 break;
             case 1: //shovel. Player starts with shovel
                 hero.shovel();
-                zombies.checkShovel(hero.x, hero.y);
+                if(zombies.checkShovel(hero.x, hero.y)){
+                    hitSound.play();
+                }
                 break;
             case 2: //Yoyo.
                 if( !hasYoyo ) break;

@@ -509,6 +509,21 @@
 		},
 		"/Showcase/day18.gif": {
 			"sdcard": false
+		},
+		"/audio/loot.wav": {
+			"sdcard": false
+		},
+		"/audio/Loot.wav": {
+			"sdcard": false
+		},
+		"/audio/LootPickup.wav": {
+			"sdcard": false
+		},
+		"/audio/Hit.wav": {
+			"sdcard": false
+		},
+		"/audio/Planted.wav": {
+			"sdcard": false
 		}
 	}
 }

@@ -29,7 +29,7 @@ class ZombieImpl {
         health = new int[amount];
         eating = new int[amount];
         speeds = new float[amount];
-        if(amount > 60) amount = 60;//cap at 60
+        if(amount > 40) amount = 40;//cap at 60
         for(int i = 0; i < amount; i++){
             deadTime[i] = 0;
             wave[i] = new Zombie();
@@ -120,7 +120,7 @@ class ZombieImpl {
         return false;
     }
     
-    void checkHit(float herox, float heroy, int x, int cooldown, int back, int damage){
+    boolean checkHit(float herox, float heroy, int x, int cooldown, int back, int damage){
         for (int i = 0; i < getSize(); i++) {
             if (getZombie(i).y == heroy) {
                 if (hit(getZombie(i).x, herox, x, 8)) {
@@ -128,24 +128,26 @@ class ZombieImpl {
                     setCooldown(i, cooldown);
                     setHealth(i, getHealth(i) - damage);
                     eating[i] = 0;
+                    return true;
                 }
             }
         }
+        return false;
     }
     
     //shovel hit
-    void checkShovel(float herox, float heroy){
-        checkHit(herox, heroy, 26, 80, 6, 4);
+    boolean checkShovel(float herox, float heroy){
+        return checkHit(herox, heroy, 26, 80, 6, 4);
     }
     
     //yoyo hit
-    void checkYoyo(float herox, float heroy){
-        checkHit(herox, heroy, 30, 10, 1, 1);
+    boolean checkYoyo(float herox, float heroy){
+        return checkHit(herox, heroy, 30, 10, 1, 1);
     }
     
     //sword hit
-    void checkSword(float herox, float heroy){
-        checkHit(herox, heroy, 18, 15, 20, 10);
+    boolean checkSword(float herox, float heroy){
+        return checkHit(herox, heroy, 18, 15, 20, 10);
     }
     
     //gun hit
