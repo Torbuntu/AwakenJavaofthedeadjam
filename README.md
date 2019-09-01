@@ -274,3 +274,20 @@ Updated:
 
 Removed:
 * Consumables/edibles gone completely
+
+
+## Day18
+
+| Showcase |
+|----|
+| ![](Showcase/day18.gif?raw=true) |
+
+Added:
+* Death animation for enemy zombies.
+* Title Screen image and demo actions.
+
+Updated:
+* Hero and Zombie sprites are closer to finalized.
+* Inventory screen adjusted for readability.
+* HUD on top of play field updated a little for styling.
+* Minor code cleanup.
