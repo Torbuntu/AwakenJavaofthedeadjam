@@ -699,12 +699,12 @@ class Main extends State {
     }
     
     void drawZombies() {
-        for (Zombie z: zombies.getAllZombies()) {
-            z.draw(screen);
-        }
         for (Death d : zombies.getAllDeath()){
             if(null == d) continue;
             d.draw(screen);
+        }
+        for (Zombie z: zombies.getAllZombies()) {
+            z.draw(screen);
         }
     }
 
