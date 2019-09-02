@@ -33,7 +33,8 @@ import item.Loot;
 import audio.Select;
 import audio.LootPickup;
 import audio.Hit;
-// import audio.Planted;
+import audio.Planted;
+import audio.ShootSound;
 
 import ZombieImpl;
 import CoffeaImpl;
@@ -71,7 +72,8 @@ class Main extends State {
     Select selectSound;
     LootPickup lootSound;
     Hit hitSound;
-    // Planted plantSound;
+    Planted plantSound;
+    ShootSound shootSound;
     
     //Item drops
     int fruit; //0,1,2
@@ -131,7 +133,8 @@ class Main extends State {
         selectSound = new Select(0);
         lootSound = new LootPickup(0);
         hitSound = new Hit(1);
-        //plantSound = new Planted(1);
+        plantSound = new Planted(1);
+        shootSound = new ShootSound(2);
         
         restart();
         
@@ -629,7 +632,7 @@ class Main extends State {
             case 0: //planter. Player starts with planter so always has planter. Plants and harvests crops.
             
                 if (!plants.tileContainsPlant(hx, hy) && saplling > 0 && timeToPlant > 45) {
-                  //  plantSound.play();
+                    plantSound.play();
                     timeToPlant = 0;
                     plants.plantSeed(hx, hy);
                     saplling--;
@@ -661,6 +664,7 @@ class Main extends State {
                 hero.shoot();
                 shooting = true;
                 ammo--;
+                shootSound.play();
                 bx = (int)hero.x + 20;
                 by = (int)hero.y + 10;
                 

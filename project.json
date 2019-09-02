@@ -524,6 +524,9 @@
 		},
 		"/audio/Planted.wav": {
 			"sdcard": false
+		},
+		"/audio/ShootSound.wav": {
+			"sdcard": false
 		}
 	}
 }
