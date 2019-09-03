@@ -16,6 +16,10 @@ class CoffeaImpl{
         plantStates = new int[45];
     }
     
+    /**
+     * Plants a new plant at the given x,y coords
+     * 
+     */ 
     void plantSeed(int x, int y){
         Coffea n = new Coffea();
         n.x = 6 + x * 24;
@@ -30,6 +34,9 @@ class CoffeaImpl{
         }
     }
     
+    /**
+     * Check if the tile at x,y contains a plant.     * 
+     */
     boolean tileContainsPlant(int x, int y) {
         for (Coffea c: plants) {
             if (c == null) continue;
@@ -38,6 +45,14 @@ class CoffeaImpl{
         return false;
     }
     
+    /**
+     * Checks if the tile contains an item. 
+     * 
+     * If the plant state is 4 (harvestable) return 1 (fruit++)
+     * If the plant is dead, clean it up.
+     * If no plant, return 0.
+     * 
+     */
     int tileContainsItem(int x, int y){
         for(int i = 0; i < plants.length; i++){
             if(plants[i] == null)continue;
@@ -61,6 +76,10 @@ class CoffeaImpl{
         return 0;//no item
     }
     
+    /**
+     * Updates the plants at the end of each day.
+     * 
+     */
     void updatePlants(){
         for(int i = 0; i < plants.length; i++){
             if(plants[i] == null)continue;
@@ -84,6 +103,8 @@ class CoffeaImpl{
         }
     }
     
+    
+    //Getter/Setters
     void setState(int st, int idx){
         plantStates[idx] = st;
     }
