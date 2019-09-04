@@ -11,6 +11,7 @@ import backgrounds.Playfield;
 import backgrounds.Inventory;
 import backgrounds.Shop;
 import backgrounds.Title;
+import backgrounds.WinGame;
 
 import entities.hero.Hero;
 import entities.enemies.zombie.Zombie;
@@ -49,6 +50,7 @@ class Main extends State {
     Inventory inventoryScreen;
     Shop shop;
     Title titleScreen;
+    WinGame winGameScreen;
     
     Hero hero;
 
@@ -112,6 +114,7 @@ class Main extends State {
         playField = new Playfield();
         inventoryScreen = new Inventory();
         titleScreen = new Title();
+        winGameScreen = new WinGame();
         
         shop = new Shop();
         hero = new Hero();
@@ -313,7 +316,11 @@ class Main extends State {
                                 ammo += 15;
                                 message = Constants.PURCHASED_AMMO;
                             }else{
-                                message = Constants.NOT_ENOUGH_COIN_AMMO;
+                                if(hasGun){
+                                    message = Constants.NOT_ENOUGH_COIN_AMMO;
+                                }else{
+                                    message = "You do not own the Gun.";
+                                }
                             }
                             break;
                         case 2://health
@@ -388,22 +395,13 @@ class Main extends State {
                     waveNum += 2;
                     zombies = new ZombieImpl(waveNum);
                 }
-                
-                if(!hasYoyo)notHas.draw(screen, 50, 90);
-                if(!hasSword)notHas.draw(screen, 50, 116);
-                if(!hasGun){
-                    notHas.draw(screen, 50, 38);
-                    notHas.draw(screen, 50, 142);
-                }
 
                 screen.setTextColor(11);
                 screen.setTextPosition(109, 12);
                 screen.print(Constants.X+coins);
-                coin.draw(screen, 100, 10);
                 
                 screen.setTextPosition(110, 22);
                 screen.print(Constants.FRUIT+ fruit);
-                fruitIcon.draw(screen, 100, 20);
                 
                 //draw fruit meter
                 screen.drawCircle(125, 60, 25, 5, false);
@@ -535,7 +533,6 @@ class Main extends State {
                 
                 screen.setTextPosition(16, 81);
                 screen.print(Constants.FRUIT+ fruit);
-                fruitIcon.draw(screen, 6, 78);
                 
                 //draw
                 drawInventory(8, left);
@@ -555,6 +552,7 @@ class Main extends State {
                 }
                 break;
             case 5://WIN
+                winGameScreen.draw(screen, 0, 0);
                 screen.setTextColor(11);
                 screen.setTextPosition(10, 100);
                 screen.print("YOU WIN! The World is saved!");
@@ -602,7 +600,7 @@ class Main extends State {
             hx -= 1;
             timeToPlant = 0;
         }
-
+        
         if (Button.A.isPressed() && cooldown == 0) itemAction(right);
         if (Button.B.isPressed() && cooldown == 0)  itemAction(left);
 
@@ -763,51 +761,40 @@ class Main extends State {
 
         screen.setTextPosition(150, 8);
         screen.print(Constants.X + coins);
-        coin.draw(screen, 141, 6);
+        // coin.draw(screen, 141, 6);
         
         screen.setTextPosition(150, 18);
         screen.print(Constants.X + saplling);
-        saplingIcon.draw(screen, 141, 16);
+        // saplingIcon.draw(screen, 141, 16);
         
         screen.setTextPosition(150, 28);
         screen.print(Constants.X + fruit);
-        fruitIcon.draw(screen, 141, 26);
+        // fruitIcon.draw(screen, 141, 26);
                 
         screen.setTextPosition(150, 38);
         screen.print(Constants.X+ammo);
-        ammoIcon.draw(screen, 141, 36);
+        // ammoIcon.draw(screen, 141, 36);
     }
     
     //Draws the prices of items in the shop screen
     void drawPrices(){
-        coin.draw(screen, 1, 16);
         screen.setTextColor(11);
-        screen.setTextPosition(9, 18);
+        screen.setTextPosition(10, 18);
         screen.print(Constants.X + Constants.FIVE);//seed
         
-        coin.draw(screen, 1, 16 + 1 * 26);
-        screen.setTextColor(11);
-        screen.setTextPosition(9, 18 + 1 * 26);
+        screen.setTextPosition(10, 18 + 1 * 26);
         screen.print(Constants.X + Constants.TEN);//ammo
         
-        coin.draw(screen, 1, 16 + 2 * 26);
-        screen.setTextColor(11);
-        screen.setTextPosition(9, 18 + 2 * 26);
+        screen.setTextPosition(10, 18 + 2 * 26);
         screen.print(Constants.X + Constants.FIFTY);//health
         
-        coin.draw(screen, 1, 16 + 3 * 26);
-        screen.setTextColor(11);
-        screen.setTextPosition(9, 18 + 3 * 26);
+        screen.setTextPosition(10, 18 + 3 * 26);
         screen.print(Constants.X + Constants.FIFTY);//yoyo
         
-        coin.draw(screen, 1, 16 + 4 * 26);
-        screen.setTextColor(11);
-        screen.setTextPosition(9, 18 + 4 * 26);
+        screen.setTextPosition(10, 18 + 4 * 26);
         screen.print(Constants.X + Constants.ONE_HUNDRED_FIFTY);//sword
         
-        coin.draw(screen, 1, 16 + 5 * 26);
-        screen.setTextColor(11);
-        screen.setTextPosition(9, 18 + 5 * 26);
+        screen.setTextPosition(10, 18 + 5 * 26);
         screen.print(Constants.X + Constants.TWO_HUNDRED_FIFTY);//gun
     }
     
