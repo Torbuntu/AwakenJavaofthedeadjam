@@ -275,14 +275,14 @@ class Main extends State {
 
                 drawQuantities();
                 
-                screen.setTextPosition(0, 16);
-                screen.print(Constants.DAY+day);
+                screen.setTextPosition(102, 0);
+                screen.print(Constants.X + day);
                 
                 if (Button.C.justPressed()) state = 3;
                 
                 //Day meter
                 updateTime();
-                screen.drawLine(0.0f, 12.0f, time, 12.0f, 14, false);
+                screen.drawLine(0.0f, 1.0f, time, 1.0f, 14, false);
 
                 break;
             case 2://Shop screen
@@ -392,16 +392,24 @@ class Main extends State {
                 }
 
                 screen.setTextColor(11);
-                screen.setTextPosition(109, 20);
+                screen.setTextPosition(109, 12);
                 screen.print(Constants.X+coins);
-                coin.draw(screen, 100, 20);
+                coin.draw(screen, 100, 10);
+                
+                screen.setTextPosition(110, 22);
+                screen.print(Constants.FRUIT+ fruit);
+                fruitIcon.draw(screen, 100, 20);
+                
+                //draw fruit meter
+                screen.drawCircle(125, 60, 25, 5, false);
+                if(fruit >= 25) {
+                    screen.fillCircle(125, 60, 25, 7, false);   
+                }else{
+                    screen.fillCircle(125, 60, fruit, 1, false);
+                }
                 
                 screen.setTextPosition(0, 170);
                 screen.print(Constants.C_TO_START_NEXT_DAY);
-                
-                screen.setTextPosition(110, 128);
-                screen.print(Constants.FRUIT+ fruit);
-                fruitIcon.draw(screen, 100, 126);
                 
                 screen.setTextColor(9);
                 screen.setTextPosition(0, 0);
@@ -532,7 +540,7 @@ class Main extends State {
                 screen.drawRect(8 + handSelect * 24, 38, 17, 17, 9);
 
                 break;
-            case 4:
+            case 4://GAME OVER
                 screen.setTextColor(11);
                 screen.setTextPosition(10, 100);
                 screen.print(Constants.GAME_OVER);
@@ -693,15 +701,15 @@ class Main extends State {
     void drawLives() {
         switch (state) {
             case 1://play field
-                screen.drawRect(0, 0, maxLives*12, 9, 7, false);
+                screen.drawRect(6, 32, maxLives*12, 9, 7, false);
                 for (int i = 0; i < lives; i++) {
-                    heart.draw(screen, (float)(2 + i * 12), 1.0f);
+                    heart.draw(screen, (float)(8 + i * 12), 33.0f);
                 }
                 break;
             case 3://inventory screen
-                screen.drawRect(6, 64, maxLives*12, 9, 7, false);
+                screen.drawRect(6, 63, maxLives*12, 9, 7, false);
                 for (int i = 0; i < lives; i++) {
-                    heart.draw(screen, (float)(8 + i * 12), 65.0f);
+                    heart.draw(screen, (float)(8 + i * 12), 64.0f);
                 }
                 break;
         }
@@ -748,21 +756,21 @@ class Main extends State {
     void drawQuantities(){
         screen.setTextColor(11);
 
-        screen.setTextPosition(10, 27);
+        screen.setTextPosition(150, 8);
         screen.print(Constants.X + coins);
-        coin.draw(screen, 0, 24);
+        coin.draw(screen, 141, 6);
         
-        screen.setTextPosition(10, 38);
-        screen.print(Constants.X+ammo);
-        ammoIcon.draw(screen, 0, 36);
-        
-        screen.setTextPosition(121, 10);
+        screen.setTextPosition(150, 18);
         screen.print(Constants.X + saplling);
-        saplingIcon.draw(screen, 112, 8);
+        saplingIcon.draw(screen, 141, 16);
         
-        screen.setTextPosition(121, 20);
+        screen.setTextPosition(150, 28);
         screen.print(Constants.X + fruit);
-        fruitIcon.draw(screen, 112, 18);
+        fruitIcon.draw(screen, 141, 26);
+                
+        screen.setTextPosition(150, 38);
+        screen.print(Constants.X+ammo);
+        ammoIcon.draw(screen, 141, 36);
     }
     
     //Draws the prices of items in the shop screen
