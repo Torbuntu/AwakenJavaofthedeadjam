@@ -245,6 +245,10 @@ class Main extends State {
             case 1: //Game play screen
                 playField.draw(screen, 0.0f, 0.0f);
                 
+                //draw
+                drawInventory(8, left);
+                drawInventory(56, right);
+                
                 if (cooldown > 0) cooldown--;
                 
                 if( shooting ){
@@ -287,6 +291,7 @@ class Main extends State {
                 break;
             case 2://Shop screen
                 shop.draw(screen, 0.0f, 0.0f);
+                
                 if(purchaceSelect < 0 && (Button.Down.justPressed() || Button.Up.justPressed())) purchaceSelect = 0;
                 if(Button.Down.justPressed() && purchaceSelect < 5) purchaceSelect++;
                 if(Button.Up.justPressed() && purchaceSelect > 0)purchaceSelect--;
