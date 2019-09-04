@@ -291,3 +291,15 @@ Updated:
 * Inventory screen adjusted for readability.
 * HUD on top of play field updated a little for styling.
 * Minor code cleanup.
+
+
+
+## Day19
+
+| Showcase |
+|----|
+| ![](Showcase/day19.png?raw=true) |
+
+Updated:
+* Major UI/UX updates
+* Commented code
