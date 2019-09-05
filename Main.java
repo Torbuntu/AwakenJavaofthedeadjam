@@ -436,10 +436,12 @@ class Main extends State {
                             if(hasSword){
                                 left = handSelect;
                             }
+                            break;
                         case 4:
                             if(hasGun){
                                 left = handSelect;
                             }
+                            break;
                         case 5:
                             if(fruit >= 25){
                                 state = 5;
@@ -461,10 +463,12 @@ class Main extends State {
                             if(hasSword){
                                 right = handSelect;
                             }
+                            break;
                         case 4:
                             if(hasGun){
                                 right = handSelect;
                             }
+                            break;
                         default:
                             right = handSelect;
                             break;

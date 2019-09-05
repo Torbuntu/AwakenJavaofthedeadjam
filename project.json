@@ -535,6 +535,12 @@
 		"/backgrounds/WinGame.png": {
 			"sdcard": false,
 			"implements": ""
+		},
+		"/Showcase/day20.gif": {
+			"sdcard": false
+		},
+		"/Showcase/.goutputstream-DK8R7Z": {
+			"sdcard": false
 		}
 	}
 }
