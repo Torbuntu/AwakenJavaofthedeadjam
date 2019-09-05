@@ -12,7 +12,7 @@ import CoffeaImpl;
 import item.Loot;
 
 class ZombieImpl {
-    
+    int max;
     Zombie[] wave;   // array of zombies
     Death[] corpses; // corpse animations for dead zombies
     int[] deadTime;  // timer for dying animation to play
@@ -25,6 +25,7 @@ class ZombieImpl {
      * constructor takes an integer for starting number of zombies. 
      */
     public ZombieImpl(int start){
+        max = 30;
         makeWave(start);
     }
     
@@ -41,9 +42,8 @@ class ZombieImpl {
      * 
      */ 
     void makeWave(int amount){
-        
-        if(amount > 40) amount = 40;//cap at 60
-        
+        if(amount > max) amount = max;//maximum zombies
+
         corpses = new Death[amount];
         deadTime = new int[amount];
         wave = new Zombie[amount];

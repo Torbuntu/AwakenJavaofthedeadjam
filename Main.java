@@ -204,7 +204,7 @@ class Main extends State {
                     hasSword = true;
                     ammo = 9000;
                     coins = 10000;
-                    fruit = 13;
+                    fruit = 28;
                     maxLives = 9;
                 }
                 
@@ -248,16 +248,8 @@ class Main extends State {
             case 1: //Game play screen
                 playField.draw(screen, 0.0f, 0.0f);
                 
-                //draw
-                drawInventory(8, left);
-                drawInventory(56, right);
-                
                 if (cooldown > 0) cooldown--;
-                
-                if( shooting ){
-                    updateBullet();
-                    screen.fillCircle(bx, by, 2, 1);
-                }
+             
                 //move zombies and add coins for kills
                 coins = zombies.moveZombies(coins, plants, tileLoot);
                 
@@ -270,7 +262,19 @@ class Main extends State {
                     cooldown = 100;
                 }
                 
+                if (Button.C.justPressed()) state = 3;
+                
                 moveHero();
+                updateTime();
+                
+                if( shooting ){
+                    updateBullet();
+                    screen.fillCircle(bx, by, 2, 1);
+                }
+                
+                //draw equipped inventories
+                drawInventory(8, left);
+                drawInventory(56, right);
                 
                 drawPlants();
                 
@@ -285,10 +289,7 @@ class Main extends State {
                 screen.setTextPosition(102, 0);
                 screen.print(Constants.X + day);
                 
-                if (Button.C.justPressed()) state = 3;
-                
                 //Day meter
-                updateTime();
                 screen.drawLine(0.0f, 1.0f, time, 1.0f, 14, false);
 
                 break;
@@ -394,14 +395,8 @@ class Main extends State {
                     state = 1;
                     waveNum += 2;
                     zombies = new ZombieImpl(waveNum);
+                    break;
                 }
-
-                screen.setTextColor(11);
-                screen.setTextPosition(109, 12);
-                screen.print(Constants.X+coins);
-                
-                screen.setTextPosition(110, 22);
-                screen.print(Constants.FRUIT+ fruit);
                 
                 //draw fruit meter
                 screen.drawCircle(125, 60, 25, 5, false);
@@ -410,13 +405,8 @@ class Main extends State {
                 }else{
                     screen.fillCircle(125, 60, fruit, 1, false);
                 }
-                
-                screen.setTextPosition(0, 170);
-                screen.print(Constants.C_TO_START_NEXT_DAY);
-                
-                screen.setTextColor(9);
-                screen.setTextPosition(0, 0);
-                screen.print(message);
+            
+                drawShopText();
                 
                 //draw purchaceSelect
                 screen.drawRect(50, 12 + purchaceSelect * 26, 17, 17, 9);
@@ -424,11 +414,14 @@ class Main extends State {
                 break;
             case 3:// Inventory Screen
                 inventoryScreen.draw(screen, 0.0f, 0.0f);
-                drawLives();
+                
+                // Continue
                 if (Button.C.justPressed()){
                     selectSound.play();
-                    state = 1;  
+                    state = 1; 
+                    break;
                 } 
+                
                 if (Button.Left.justPressed() && handSelect > 0) handSelect--;
                 if (Button.Right.justPressed() && handSelect < 5) handSelect++;
 
@@ -478,71 +471,14 @@ class Main extends State {
                     }
                 }
                 
+                drawInventoryText();
                 
-                screen.setTextPosition(6, 160);
-                switch(handSelect){
-                    case 0:
-                        screen.print("Equip the Planter.");
-                        break;
-                    case 1:
-                        screen.print("Equip the Shovel.");
-                        break;
-                    case 2:
-                        if(hasYoyo){
-                            screen.print("Equip the Yoyo.");
-                        }else{
-                            screen.print("You do not yet own the Yoyo.");
-                        }
-                        break;
-                    case 3:
-                        if(hasSword){
-                            screen.print("Equip the Sword.");
-                        }else{
-                            screen.print("You do not yet own the Sword.");
-                        }
-                        break;
-                    case 4:
-                        if(hasGun){
-                            screen.print("Equip the Gun.");
-                        }else{
-                            screen.print("You do not yet own the Gun.");
-                        }
-                    default:
-                        break;
-                }
-            
-                if(!hasYoyo)notHas.draw(screen, 8+24*2, 38);
-                if(!hasSword)notHas.draw(screen, 8+24*3, 38);
-                if(!hasGun)notHas.draw(screen, 8+24*4, 38);
+                drawInventoryImages();
                 
-                if(handSelect == 5 ) {
-                   if(fruit >= 25){
-                       screen.print(Constants.PRESS_B_TO_CRAFT);
-                   } else {
-                       screen.print(Constants.FRUIT_TO_WIN + (25 - fruit));
-                   }
-                }
-                
-                //draw fruit meter
-                screen.drawCircle(185, 35, 25, 5, false);
-                if(fruit >= 25) {
-                    screen.fillCircle(185, 35, 25, 7, false);   
-                }else{
-                    screen.fillCircle(185, 35, fruit, 1, false);
-                }
-                
-                screen.setTextPosition(16, 81);
-                screen.print(Constants.FRUIT+ fruit);
-                
-                //draw
-                drawInventory(8, left);
-                drawInventory(56, right);
-
-                //draw handSelect
-                screen.drawRect(8 + handSelect * 24, 38, 17, 17, 9);
-
                 break;
             case 4://GAME OVER
+                zombies.moveZombies(coins, plants, tileLoot);
+                drawZombies();
                 screen.setTextColor(11);
                 screen.setTextPosition(10, 100);
                 screen.print(Constants.GAME_OVER);
@@ -553,9 +489,13 @@ class Main extends State {
                 break;
             case 5://WIN
                 winGameScreen.draw(screen, 0, 0);
+                hero.sword();
+                hero.draw(screen, 90, 30);
                 screen.setTextColor(11);
-                screen.setTextPosition(10, 100);
+                screen.setTextPosition(30, 80);
                 screen.print("YOU WIN! The World is saved!");
+                screen.setTextPosition(30, 90);
+                screen.print("You crafted the cure!");
                 if(Button.C.justPressed()) {
                     restart();
                     state = 0;
@@ -663,12 +603,16 @@ class Main extends State {
             case 2: //Yoyo.
                 if( !hasYoyo ) break;
                 hero.yoyo();
-                zombies.checkYoyo(hero.x, hero.y);
+                if(zombies.checkYoyo(hero.x, hero.y)){
+                    hitSound.play();   
+                }
                 break;
             case 3://sword
                 if(!hasSword)break;
                 hero.sword();
-                zombies.checkSword(hero.x, hero.y);
+                if(zombies.checkSword(hero.x, hero.y)){
+                    hitSound.play();
+                }
                 break;
             case 4://gun
                 if(!hasGun || ammo == 0 || shooting)break;
@@ -755,25 +699,110 @@ class Main extends State {
         }
     }
     
+    void drawInventoryImages(){
+        drawLives();
+
+        //draw fruit meter
+        screen.drawCircle(185, 35, 25, 5, false);
+        if(fruit >= 25) {
+            screen.fillCircle(185, 35, 25, 7, false);   
+        }else{
+            screen.fillCircle(185, 35, fruit, 1, false);
+        }
+        
+        //draw
+        drawInventory(8, left);
+        drawInventory(56, right);
+
+        //draw handSelect
+        screen.drawRect(8 + handSelect * 24, 38, 17, 17, 9);
+        
+        //Draw question for notHas items.
+        if(!hasYoyo)notHas.draw(screen, 8+24*2, 38);
+        if(!hasSword)notHas.draw(screen, 8+24*3, 38);
+        if(!hasGun)notHas.draw(screen, 8+24*4, 38);
+    }
+    
+    void drawInventoryText(){
+        screen.setTextPosition(6, 160);
+        switch(handSelect){
+            case 0:
+                screen.print("Equip the Planter.");
+                break;
+            case 1:
+                screen.print("Equip the Shovel.");
+                break;
+            case 2:
+                if(hasYoyo){
+                    screen.print("Equip the Yoyo.");
+                }else{
+                    screen.print("You do not yet own the Yoyo.");
+                }
+                break;
+            case 3:
+                if(hasSword){
+                    screen.print("Equip the Sword.");
+                }else{
+                    screen.print("You do not yet own the Sword.");
+                }
+                break;
+            case 4:
+                if(hasGun){
+                    screen.print("Equip the Gun.");
+                }else{
+                    screen.print("You do not yet own the Gun.");
+                }
+            default:
+                break;
+        }
+    
+        if(handSelect == 5 ) {
+           if(fruit >= 25){
+               screen.print(Constants.PRESS_B_TO_CRAFT);
+           } else {
+               screen.print(Constants.FRUIT_TO_WIN + (25 - fruit));
+           }
+        }
+
+        screen.setTextPosition(16, 81);
+        screen.print(Constants.FRUIT+ fruit);
+    }
+    
     //draws the quantities of items in game screen
     void drawQuantities(){
         screen.setTextColor(11);
 
         screen.setTextPosition(150, 8);
         screen.print(Constants.X + coins);
-        // coin.draw(screen, 141, 6);
         
         screen.setTextPosition(150, 18);
         screen.print(Constants.X + saplling);
-        // saplingIcon.draw(screen, 141, 16);
         
         screen.setTextPosition(150, 28);
         screen.print(Constants.X + fruit);
-        // fruitIcon.draw(screen, 141, 26);
                 
         screen.setTextPosition(150, 38);
         screen.print(Constants.X+ammo);
-        // ammoIcon.draw(screen, 141, 36);
+    }
+    
+    void drawShopText(){
+        //Draw current coin amount
+        screen.setTextColor(11);
+        screen.setTextPosition(109, 12);
+        screen.print(Constants.X+coins);
+        
+        //Draw fruit text.
+        screen.setTextPosition(110, 22);
+        screen.print(Constants.FRUIT+ fruit);
+        
+        //Start next day message
+        screen.setTextPosition(0, 170);
+        screen.print(Constants.C_TO_START_NEXT_DAY);
+        
+        //Info message draw
+        screen.setTextColor(9);
+        screen.setTextPosition(0, 0);
+        screen.print(message);
     }
     
     //Draws the prices of items in the shop screen
