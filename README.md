@@ -303,3 +303,18 @@ Updated:
 Updated:
 * Major UI/UX updates
 * Commented code
+
+
+## Day20
+
+| Showcase |
+|----|
+| ![](Showcase/day20.gif?raw=true) |
+
+Updated:
+* Drew items directly to background to avoid rendering more sprites than necessary. 
+* Updated code with comments and separated drawing and updating calls.
+* Game over screen now shows zombies.
+
+Added:
+* Added a Game Won screen.
