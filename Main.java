@@ -12,6 +12,7 @@ import backgrounds.Inventory;
 import backgrounds.Shop;
 import backgrounds.Title;
 import backgrounds.WinGame;
+import backgrounds.GameOver;
 
 import entities.hero.Hero;
 import entities.enemies.zombie.Zombie;
@@ -51,6 +52,7 @@ class Main extends State {
     Shop shop;
     Title titleScreen;
     WinGame winGameScreen;
+    GameOver gameOverScreen;
     
     Hero hero;
 
@@ -95,6 +97,8 @@ class Main extends State {
     
     String message;
 
+    boolean hardMode;
+    int mode;
 
     //tmp bullet stuff
     int bx, by;
@@ -115,6 +119,7 @@ class Main extends State {
         inventoryScreen = new Inventory();
         titleScreen = new Title();
         winGameScreen = new WinGame();
+        gameOverScreen = new GameOver();
         
         shop = new Shop();
         hero = new Hero();
@@ -156,6 +161,7 @@ class Main extends State {
         right = 1; //shovel
         
         waveNum = 2;
+        mode = 1;
         zombies = new ZombieImpl(waveNum);
         plants = new CoffeaImpl();
 
@@ -174,6 +180,7 @@ class Main extends State {
         fruit = 0;
         
         message = "";
+        hardMode = false;
         
         //tmp bullet
         shooting = false;
@@ -206,6 +213,14 @@ class Main extends State {
                     coins = 10000;
                     fruit = 28;
                     maxLives = 9;
+                }
+                if(Button.Left.justPressed()){
+                    hardMode = false;
+                    mode = 1;
+                }
+                if(Button.Right.justPressed()){
+                    hardMode = true;
+                    mode = 2;
                 }
                 
                 if(Button.B.justPressed() || Button.A.justPressed()){
@@ -241,8 +256,21 @@ class Main extends State {
                 hero.draw(screen, 80.0f, 140.0f);
 
                 screen.setTextColor(11);
-                screen.setTextPosition(70, 130);
+                screen.setTextPosition(60, 130);
                 screen.print(Constants.PRESS_C_TO_PLAY);
+                
+                screen.setTextPosition(70, 120);
+                screen.println("< - mode - >");
+                
+                screen.setTextColor(10);
+                if(hardMode){
+                    screen.setTextPosition(138, 120);
+                    screen.print("Hard!");
+                }else{
+                    screen.setTextPosition(28, 120);
+                    screen.println("Normal.");
+                }
+                
 
                 break;
             case 1: //Game play screen
@@ -327,7 +355,7 @@ class Main extends State {
                         case 2://health
                             if(coins >= 50 ){
                                 
-                                if(maxLives < 9){
+                                if(hardMode && (maxLives < 4) || !hardMode && (maxLives < 9)){
                                     maxLives++;
                                 }
                                 if(lives < maxLives){
@@ -339,7 +367,7 @@ class Main extends State {
                                 }
                                 
                             }else{
-                                if(maxLives == 9){
+                                if(hardMode && maxLives == 4 || maxLives == 9){
                                     message = Constants.MAX_LIVES_REACHED;
                                 }else{
                                     message = Constants.NOT_ENOUGH_COIN_LIVES;
@@ -400,10 +428,10 @@ class Main extends State {
                 
                 //draw fruit meter
                 screen.drawCircle(125, 60, 25, 5, false);
-                if(fruit >= 25) {
+                if(fruit >= 25*mode) {
                     screen.fillCircle(125, 60, 25, 7, false);   
                 }else{
-                    screen.fillCircle(125, 60, fruit, 1, false);
+                    screen.fillCircle(125, 60, fruit/mode, 1, false);
                 }
             
                 drawShopText();
@@ -443,7 +471,7 @@ class Main extends State {
                             }
                             break;
                         case 5:
-                            if(fruit >= 25){
+                            if(fruit >= 25*mode){
                                 state = 5;
                             }
                             break;
@@ -475,12 +503,12 @@ class Main extends State {
                     }
                 }
                 
-                drawInventoryText();
-                
                 drawInventoryImages();
+                drawInventoryText();
                 
                 break;
             case 4://GAME OVER
+                gameOverScreen.draw(screen, 0,0);
                 zombies.moveZombies(coins, plants, tileLoot);
                 drawZombies();
                 screen.setTextColor(11);
@@ -708,23 +736,23 @@ class Main extends State {
 
         //draw fruit meter
         screen.drawCircle(185, 35, 25, 5, false);
-        if(fruit >= 25) {
+        if(fruit >= 25*mode) {
             screen.fillCircle(185, 35, 25, 7, false);   
         }else{
-            screen.fillCircle(185, 35, fruit, 1, false);
+            screen.fillCircle(185, 35, fruit/mode, 1, false);
         }
         
         //draw
         drawInventory(8, left);
         drawInventory(56, right);
-
-        //draw handSelect
-        screen.drawRect(8 + handSelect * 24, 38, 17, 17, 9);
         
         //Draw question for notHas items.
         if(!hasYoyo)notHas.draw(screen, 8+24*2, 38);
         if(!hasSword)notHas.draw(screen, 8+24*3, 38);
         if(!hasGun)notHas.draw(screen, 8+24*4, 38);
+        
+        //draw handSelect
+        screen.drawRect(8 + handSelect * 24, 38, 17, 17, 9);
     }
     
     void drawInventoryText(){
@@ -761,10 +789,10 @@ class Main extends State {
         }
     
         if(handSelect == 5 ) {
-           if(fruit >= 25){
+           if(fruit >= 25*mode){
                screen.print(Constants.PRESS_B_TO_CRAFT);
            } else {
-               screen.print(Constants.FRUIT_TO_WIN + (25 - fruit));
+               screen.print(Constants.FRUIT_TO_WIN + ((25*mode) - fruit));
            }
         }
 

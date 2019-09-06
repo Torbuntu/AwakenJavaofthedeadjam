@@ -541,6 +541,10 @@
 		},
 		"/Showcase/.goutputstream-DK8R7Z": {
 			"sdcard": false
+		},
+		"/backgrounds/GameOver.png": {
+			"sdcard": false,
+			"implements": ""
 		}
 	}
 }

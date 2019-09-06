@@ -122,7 +122,7 @@
  },
  "meta": {
   "app": "http://www.aseprite.org/",
-  "version": "1.2.13-x64",
+  "version": "1.2.14-x64",
   "image": "Zombie.png",
   "format": "RGBA8888",
   "size": { "w": 240, "h": 16 },
