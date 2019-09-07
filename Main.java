@@ -114,12 +114,15 @@ class Main extends State {
     // Avoid allocation in a State's constructor.
     // Allocate on init instead.
     void init() {
+        System.out.println("Start Init");
         screen = new HiRes16Color(Castpixel16.palette(), TIC80.font());
         playField = new Playfield();
         inventoryScreen = new Inventory();
         titleScreen = new Title();
         winGameScreen = new WinGame();
         gameOverScreen = new GameOver();
+        
+        System.out.println("Images initialized");
         
         shop = new Shop();
         hero = new Hero();
@@ -131,12 +134,18 @@ class Main extends State {
         gun = new Gun();
         coin = new Coin();
         
+        System.out.println("Objects initialized");
+        
         fruitIcon = new Fruit();
         saplingIcon = new Sapling();
+        
+        System.out.println("Icons initialized");
         
         heart = new Heart();
         notHas = new NotHas();
         ammoIcon = new Ammo();
+        
+        System.out.println("Sprites initialized");
         
         selectSound = new Select(0);
         lootSound = new LootPickup(0);
@@ -144,11 +153,14 @@ class Main extends State {
         plantSound = new Planted(1);
         shootSound = new ShootSound(2);
         
+        System.out.println("Sounds initialized");
+        
         restart();
         
         
         // Initialize the Mixer at 8khz
         Mixer.init(8000);
+        System.out.println("Finished Init");
     }
     
     void restart(){
@@ -213,6 +225,8 @@ class Main extends State {
                     coins = 10000;
                     fruit = 28;
                     maxLives = 9;
+                    saplling = 100;
+                    waveNum = 20;
                 }
                 if(Button.Left.justPressed()){
                     hardMode = false;
@@ -421,8 +435,14 @@ class Main extends State {
                 if (Button.C.justPressed()) {
                     selectSound.play();
                     state = 1;
-                    waveNum += 2;
+                    if(waveNum < 20) waveNum += 2;
+                    zombies = null;
+                    tileLoot = null;
+                    plants.cleanupDeadPlants();
+                    System.gc();
                     zombies = new ZombieImpl(waveNum);
+                    tileLoot = new Loot[45];
+                    System.gc();
                     break;
                 }
                 
@@ -524,8 +544,10 @@ class Main extends State {
                 hero.sword();
                 hero.draw(screen, 90, 30);
                 screen.setTextColor(11);
-                screen.setTextPosition(30, 80);
+                screen.setTextPosition(30, 70);
                 screen.print("YOU WIN! The World is saved!");
+                screen.setTextPosition(30, 80);
+                screen.print("Days: " + day);
                 screen.setTextPosition(30, 90);
                 screen.print("You crafted the cure!");
                 if(Button.C.justPressed()) {

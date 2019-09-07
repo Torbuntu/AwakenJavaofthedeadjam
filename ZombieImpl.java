@@ -12,7 +12,6 @@ import CoffeaImpl;
 import item.Loot;
 
 class ZombieImpl {
-    int max;
     Zombie[] wave;   // array of zombies
     Death[] corpses; // corpse animations for dead zombies
     int[] deadTime;  // timer for dying animation to play
@@ -25,7 +24,6 @@ class ZombieImpl {
      * constructor takes an integer for starting number of zombies. 
      */
     public ZombieImpl(int start){
-        max = 30;
         makeWave(start);
     }
     
@@ -42,8 +40,6 @@ class ZombieImpl {
      * 
      */ 
     void makeWave(int amount){
-        if(amount > max) amount = max;//maximum zombies
-
         corpses = new Death[amount];
         deadTime = new int[amount];
         wave = new Zombie[amount];
@@ -85,30 +81,6 @@ class ZombieImpl {
                 continue;
             }
             
-            // 2. for each tile in the playField
-            for(int j = 0; j < 45; j++){
-                //if the plant is null or already dead continue to next plant
-                if(plants.getPlant(j) == null) continue;
-                
-                //if zombie is on plant tile
-                if(getZombie(i).x < plants.getPlant(j).x + 16 
-                && getZombie(i).x > plants.getPlant(j).x + 8
-                && getZombie(i).y == plants.getPlant(j).y){
-                    if(plants.getState(j) == 5) {
-                        eating[i] = 0;
-                        continue;
-                    }
-                    eating[i]++;
-                    if(eating[i] == 1) getZombie(i).eat();
-                    
-                    if(eating[i] > 100){
-                        plants.getPlant(j).dead();  
-                        plants.setState(5, j);
-                        eating[i] = 0;
-                    } 
-                }
-            }
-            
             // 3.
             if (getHealth(i) <= 0) {
                 corpses[i] = new Death();
@@ -132,7 +104,34 @@ class ZombieImpl {
                 getZombie(i).x = 222;
                 getZombie(i).y = 60 + Math.random(0, 5) * 24;
                 coins++;
+                continue;
             }
+            
+            // 2. for each tile in the playField
+            for(int j = 0; j < 45; j++){
+                //if the plant is null or already dead continue to next plant
+                if(plants.getPlant(j) == null) continue;
+                if(getZombie(i).y != plants.getPlant(j).y) continue;
+                
+                //if zombie is on plant tile
+                if(getZombie(i).x < plants.getPlant(j).x + 16 
+                && getZombie(i).x > plants.getPlant(j).x + 8
+                ){
+                    if(plants.getState(j) == 5) {
+                        eating[i] = 0;
+                        continue;
+                    }
+                    eating[i]++;
+                    if(eating[i] == 1) getZombie(i).eat();
+                    
+                    if(eating[i] > 100){
+                        plants.getPlant(j).dead();  
+                        plants.setState(5, j);
+                        eating[i] = 0;
+                    } 
+                }
+            }
+            
             // 4.
             if (getCooldown(i) > 0) {
                 setCooldown(i, getCooldown(i) - 1);
@@ -145,7 +144,7 @@ class ZombieImpl {
             //5. wrap around the board.
             if (getZombie(i).x < 0) getZombie(i).x = 220;
         }
-        return coins
+        return coins;
     }
     
     /**

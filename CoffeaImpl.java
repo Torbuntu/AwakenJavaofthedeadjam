@@ -103,6 +103,17 @@ class CoffeaImpl{
         }
     }
     
+    void cleanupDeadPlants(){
+        int i = plants.length;
+        for(int j = 0; j < i; j++){
+            if(getPlant(j) == null)continue;
+            if(getState(j) == 5){
+                plants[j] = null;
+                plantStates[j] = 0;
+            }
+        }
+    }
+    
     
     //Getter/Setters
     void setState(int st, int idx){
