@@ -26,10 +26,6 @@ import item.Yoyo;
 import item.Sword;
 import item.Gun;
 import item.NotHas;
-import item.Fruit;
-import item.Sapling;
-import item.Ammo;
-import item.Coin;
 import item.Loot;
 
 import audio.Select;
@@ -43,14 +39,103 @@ import CoffeaImpl;
 import Constants;
 
 
-class Main extends State {
+public class TitleScreenState extends State {
+    Title titleScreen;
+    Hero hero;
+    int bx;
+    boolean shooting;
 
-    HiRes16Color screen; // the screenmode we want to draw with
+    Select selectSound;
+    
+    void init(){
+        titleScreen = new Title();
+        hero = new Hero();
+        shooting = false;
+        selectSound = new Select(0);
+        Mixer.init(8000);
+    }
+    
+    void update(){
+        var screen = Main.screen;
+        titleScreen.draw(screen, 0.0f, 0.0f);
+        if (Button.C.justPressed()) {
+            selectSound.play();
+            Main.state = 1;
+            shooting = false;
+            Game.changeState(new Main());
+        }
+        if(Button.Left.justPressed()){
+            Main.hardMode = false;
+            Main.mode = 1;
+        }
+        if(Button.Right.justPressed()){
+            Main.hardMode = true;
+            Main.mode = 2;
+        }
+        
+        if(Button.B.justPressed() || Button.A.justPressed()){
+            int r = Math.random(0, 5);
+            shooting = false;
+            switch(r){
+                case 0:
+                    hero.shovel();
+                    break;
+                case 1:
+                    hero.shoot();
+                    shooting = true;
+                    bx = 100;
+                    break;
+                case 2:
+                    hero.yoyo();
+                    break;
+                case 3:
+                    hero.sword();
+                    break;
+                default:
+                    hero.idle();
+                    break;
+            }
+        }
+        
+        if(shooting){
+            bx++;
+            if(bx > 180) bx = 100;
+            screen.fillCircle(bx, 150, 2, 1);
+        }
 
+        hero.draw(screen, 80.0f, 140.0f);
+
+        screen.setTextColor(11);
+        screen.setTextPosition(60, 130);
+        screen.print(Constants.PRESS_C_TO_PLAY);
+        
+        screen.setTextPosition(70, 120);
+        screen.println("< - mode - >");
+        
+        screen.setTextColor(10);
+        if(Main.hardMode){
+            screen.setTextPosition(138, 120);
+            screen.print("Hard!");
+        }else{
+            screen.setTextPosition(28, 120);
+            screen.println("Normal.");
+        }
+        
+        screen.flush();
+    }
+}
+
+public class Main extends State {
+
+    static final HiRes16Color screen = new HiRes16Color(Castpixel16.palette(), TIC80.font()); // the screenmode we want to draw with
+
+    static boolean hasYoyo = false, hasSword = false, hasGun = false, hardMode = false;
+    static int mode = 1, state = 0, ammo = 0, coins = 0, fruit = 0, saplling = 1, maxLives = 3, waveNum = 2;
+    int day = 1;
+    
     Playfield playField;
     Inventory inventoryScreen;
     Shop shop;
-    Title titleScreen;
     WinGame winGameScreen;
     GameOver gameOverScreen;
     
@@ -66,39 +151,18 @@ class Main extends State {
     Sword sword;
     Gun gun;
     
-    Fruit fruitIcon;
-    Sapling saplingIcon;
-   
-    Ammo ammoIcon;
-    
-    Coin coin;
-    
     Select selectSound;
     LootPickup lootSound;
     Hit hitSound;
     Planted plantSound;
     ShootSound shootSound;
     
-    //Item drops
-    int fruit; //0,1,2
-
-    //inventory items:
-    int coins, saplling;
-
-    int hx, hy, left, right, cooldown, plantCount, timeToPlant, lives, maxLives, waveNum, purchaceSelect, ammo, day;
-    int state; //0 = title, 1=game, 2=pre-day, 3=pause/inventory, 4=game-over
-
-    //inventory variables
-    int handSelect; //0=left, 1=right
+    int hx, hy, left, right, cooldown, plantCount, timeToPlant, lives, purchaceSelect, handSelect;
+    // handSelect: 0=left, 1=right
     
     float time;
     
-    boolean hasYoyo, hasSword, hasGun;
-    
     String message;
-
-    boolean hardMode;
-    int mode;
 
     //tmp bullet stuff
     int bx, by;
@@ -114,15 +178,10 @@ class Main extends State {
     // Avoid allocation in a State's constructor.
     // Allocate on init instead.
     void init() {
-        System.out.println("Start Init");
-        screen = new HiRes16Color(Castpixel16.palette(), TIC80.font());
         playField = new Playfield();
         inventoryScreen = new Inventory();
-        titleScreen = new Title();
         winGameScreen = new WinGame();
         gameOverScreen = new GameOver();
-        
-        System.out.println("Images initialized");
         
         shop = new Shop();
         hero = new Hero();
@@ -132,20 +191,9 @@ class Main extends State {
         yoyo = new Yoyo();
         sword = new Sword();
         gun = new Gun();
-        coin = new Coin();
-        
-        System.out.println("Objects initialized");
-        
-        fruitIcon = new Fruit();
-        saplingIcon = new Sapling();
-        
-        System.out.println("Icons initialized");
         
         heart = new Heart();
         notHas = new NotHas();
-        ammoIcon = new Ammo();
-        
-        System.out.println("Sprites initialized");
         
         selectSound = new Select(0);
         lootSound = new LootPickup(0);
@@ -153,34 +201,24 @@ class Main extends State {
         plantSound = new Planted(1);
         shootSound = new ShootSound(2);
         
-        System.out.println("Sounds initialized");
-        
         restart();
-        
         
         // Initialize the Mixer at 8khz
         Mixer.init(8000);
-        System.out.println("Finished Init");
     }
     
     void restart(){
         hx = 1;
         hy = 1;
         time = 0.0f;
-        day = 1;
         
         left = 0; //planter
         right = 1; //shovel
         
-        waveNum = 2;
-        mode = 1;
         zombies = new ZombieImpl(waveNum);
         plants = new CoffeaImpl();
 
         lives = 3;
-        maxLives = 3;
-        coins = 0;
-        saplling = 1; //Start you off with one lonely seed. Don't screw it up! :D
         timeToPlant = 0;
         handSelect = 0;
         
@@ -188,22 +226,20 @@ class Main extends State {
         hasGun = false;
         hasSword = false;
         purchaceSelect = 0;
-        ammo = 0;
-        fruit = 0;
         
         message = "";
-        hardMode = false;
         
         //tmp bullet
         shooting = false;
         
         tileLoot = new Loot[45];
         hero.idle();
-    }
-
-    // Might help in certain situations
-    void shutdown() {
-        screen = null;
+        ammo = 0;
+        coins = 0;
+        fruit = 0;
+        saplling = 1;
+        maxLives = 3;
+        waveNum = 2;
     }
 
     // update is called by femto.Game every frame
@@ -211,81 +247,7 @@ class Main extends State {
         screen.clear(0);
         switch (state) {
             case 0://title screen
-                titleScreen.draw(screen, 0.0f, 0.0f);
-                if (Button.C.justPressed()) {
-                    selectSound.play();
-                    state = 1;
-                    shooting = false;
-                }
-                if(Button.Up.justPressed()){
-                    hasYoyo = true;
-                    hasGun = true;
-                    hasSword = true;
-                    ammo = 9000;
-                    coins = 10000;
-                    fruit = 28;
-                    maxLives = 9;
-                    saplling = 100;
-                    waveNum = 20;
-                }
-                if(Button.Left.justPressed()){
-                    hardMode = false;
-                    mode = 1;
-                }
-                if(Button.Right.justPressed()){
-                    hardMode = true;
-                    mode = 2;
-                }
-                
-                if(Button.B.justPressed() || Button.A.justPressed()){
-                    int r = Math.random(0, 5);
-                    shooting = false;
-                    switch(r){
-                        case 0:
-                            hero.shovel();
-                            break;
-                        case 1:
-                            hero.shoot();
-                            shooting = true;
-                            bx = 100;
-                            break;
-                        case 2:
-                            hero.yoyo();
-                            break;
-                        case 3:
-                            hero.sword();
-                            break;
-                        default:
-                            hero.idle();
-                            break;
-                    }
-                }
-                
-                if(shooting){
-                    bx++;
-                    if(bx > 180) bx = 100;
-                    screen.fillCircle(bx, 150, 2, 1);
-                }
-    
-                hero.draw(screen, 80.0f, 140.0f);
-
-                screen.setTextColor(11);
-                screen.setTextPosition(60, 130);
-                screen.print(Constants.PRESS_C_TO_PLAY);
-                
-                screen.setTextPosition(70, 120);
-                screen.println("< - mode - >");
-                
-                screen.setTextColor(10);
-                if(hardMode){
-                    screen.setTextPosition(138, 120);
-                    screen.print("Hard!");
-                }else{
-                    screen.setTextPosition(28, 120);
-                    screen.println("Normal.");
-                }
-                
-
+                Game.changeState(new TitleScreenState());
                 break;
             case 1: //Game play screen
                 playField.draw(screen, 0.0f, 0.0f);
