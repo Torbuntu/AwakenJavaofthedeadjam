@@ -44,6 +44,7 @@ public class TitleScreenState extends State {
     Hero hero;
     int bx;
     boolean shooting;
+    int status = 4;
 
     Select selectSound;
     
@@ -74,9 +75,18 @@ public class TitleScreenState extends State {
         }
         
         if(Button.B.justPressed() || Button.A.justPressed()){
-            int r = Math.random(0, 5);
+            int r = Math.random(0, 4);
+            if(r == status){
+                if(status >= 3){
+                    status = 0;
+                }else{
+                    status++;
+                }
+            }else{
+                status = r;
+            }
             shooting = false;
-            switch(r){
+            switch(status){
                 case 0:
                     hero.shovel();
                     break;
@@ -106,18 +116,19 @@ public class TitleScreenState extends State {
         hero.draw(screen, 80.0f, 140.0f);
 
         screen.setTextColor(11);
-        screen.setTextPosition(60, 130);
+        
+        screen.setTextPosition(63, 130);
         screen.print(Constants.PRESS_C_TO_PLAY);
         
-        screen.setTextPosition(70, 120);
+        screen.setTextPosition(78, 120);
         screen.println("< - mode - >");
         
         screen.setTextColor(10);
         if(Main.hardMode){
-            screen.setTextPosition(138, 120);
+            screen.setTextPosition(148, 120);
             screen.print("Hard!");
         }else{
-            screen.setTextPosition(28, 120);
+            screen.setTextPosition(34, 120);
             screen.println("Normal.");
         }
         
@@ -494,7 +505,7 @@ public class Main extends State {
                 zombies.moveZombies(coins, plants, tileLoot);
                 drawZombies();
                 screen.setTextColor(11);
-                screen.setTextPosition(10, 100);
+                screen.setTextPosition(78, 100);
                 screen.print(Constants.GAME_OVER);
                 if(Button.C.justPressed()) {
                     restart();
@@ -780,7 +791,7 @@ public class Main extends State {
            }
         }
 
-        screen.setTextPosition(16, 81);
+        screen.setTextPosition(18, 81);
         screen.print(Constants.FRUIT+ fruit);
     }
     
