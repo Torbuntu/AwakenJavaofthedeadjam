@@ -109,11 +109,11 @@ public class TitleScreenState extends State {
         
         if(shooting){
             bx++;
-            if(bx > 180) bx = 100;
-            screen.fillCircle(bx, 150, 2, 1);
+            if(bx > 150) bx = 100;
+            screen.fillCircle(bx, 155, 2, 1);
         }
 
-        hero.draw(screen, 80.0f, 140.0f);
+        hero.draw(screen, 78.0f, 145.0f);
 
         screen.setTextColor(11);
         
