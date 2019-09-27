@@ -61,7 +61,7 @@ public class TitleScreenState extends State {
         titleScreen.draw(screen, 0.0f, 0.0f);
         if (Button.C.justPressed()) {
             selectSound.play();
-            Main.state = 1;
+            Main.state = 6;
             shooting = false;
             Game.changeState(new Main());
         }
@@ -168,7 +168,7 @@ public class Main extends State {
     Planted plantSound;
     ShootSound shootSound;
     
-    int hx, hy, left, right, cooldown, plantCount, timeToPlant, lives, purchaceSelect, handSelect;
+    int hx, hy, left, right, cooldown, plantCount, timeToPlant, lives, purchaceSelect, handSelect, helpY;
     // handSelect: 0=left, 1=right
     
     float time;
@@ -251,6 +251,7 @@ public class Main extends State {
         saplling = 1;
         maxLives = 3;
         waveNum = 2;
+        helpY = 0;
     }
 
     // update is called by femto.Game every frame
@@ -527,6 +528,29 @@ public class Main extends State {
                     restart();
                     state = 0;
                 }
+                break;
+            case 6://Instructions
+                if(Button.C.justPressed()) {
+                    restart();
+                    state = 1;
+                }
+                
+                if(Button.Down.justPressed() && helpY > -40) helpY-=8;
+                if(Button.Up.justPressed() && helpY < 0) helpY += 8;
+                
+                if(helpY > -40){
+                    screen.setTextColor(13);
+                    screen.setTextPosition(212, 170);
+                    screen.print("v");
+                }else{
+                    screen.setTextColor(13);
+                    screen.setTextPosition(212, 170);
+                    screen.print("^");
+                }
+                
+                screen.setTextColor(11);
+                screen.setTextPosition(0,helpY);
+                screen.print("At end of year 20xx a new species of \nCoffea shrub was discovered. Folks \nquickly became addicted to this new \ncoffee and it replaced all other \nCoffea plants. The addicted started to have withdrawels without drinking it \nfor even 1 day. \n\nSuddenly folks were dying, prompting \nthe new name for the species \n'Coffea Mortuvirus.' \n\nThe dead soon began to reanimate as \nzombies, roaming the planet for this \ncoffee. \n\nA Biology student whose family owned a coffee farm quickly started working on a cure by breeding out the deadly \nvirus. \n\nThe undead were quickly attracted to \nthe farm. \nThe student must protect the crops! \n\nHold [A] or [B] to use items or weapons. \n[C] accesses inventory screen to \nchange equipped items.");
                 break;
         }
 
